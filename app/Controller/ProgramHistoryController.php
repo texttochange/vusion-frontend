@@ -2,6 +2,7 @@
 App::uses('BaseProgramSpecificController','Controller');
 App::uses('History','Model');
 App::uses('Dialogue', 'Model');
+App::uses('DialogueHelper', 'Lib');
 App::uses('UnattachedMessage','Model');
 App::uses('Request', 'Model');
 App::uses('Export', 'Model');
@@ -92,6 +93,26 @@ class ProgramHistoryController extends BaseProgramSpecificController
         }
     }
 
+    public function aggregate()
+    {
+        $requestSuccess = true;
+        $time = $this->ProgramSetting->getProgramTimeNow(); 
+        $time->modify('-1 year');
+        $histories = $this->History->aggregate(DialogueHelper::fromPhpDateToVusionDate($time));
+        $this->set(compact('histories', 'requestSuccess'));
+        $this->render('index');
+    }
+
+
+    public function aggregateNvd3()
+    {
+        $requestSuccess = true;
+        $time = $this->ProgramSetting->getProgramTimeNow(); 
+        $time->modify('-1 year');
+        $histories = $this->History->aggregateNvd3(DialogueHelper::fromPhpDateToVusionDate($time));
+        $this->set(compact('histories', 'requestSuccess'));
+        $this->render('index');
+    }
 
     public function listHistory()
     {

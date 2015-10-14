@@ -80,6 +80,13 @@ class ProgramHomeController extends BaseProgramSpecificController
             'schedules',
             'workerStatus'));
     }
+
+    public function aggregate()
+    {
+        $requestSuccess = true;
+        $schedules = $this->Schedule->aggregate();
+        $this->set(compact('schedules', 'requestSuccess'));
+    }
     
     
     public function restartWorker()

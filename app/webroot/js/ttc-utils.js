@@ -136,6 +136,7 @@ function pullBackendNotifications(url) {
 
 
 function updateClock(){
+    var moment = require('moment');
     var newTime = moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").add('seconds',1).format("DD/MM/YYYY HH:mm:ss");
     $("#local-date-time").text(newTime);    
 }
@@ -807,5 +808,5 @@ function localize_label(label) {
 function fromIsoDateToFormDate(dateString) {
     if (dateString == null)
         return '';
-    return Date.parse(dateString).toString('dd/MM/yyyy HH:mm');
+    return moment(dateString).format("DD/MM/YYYY HH:mm:ss");
 }

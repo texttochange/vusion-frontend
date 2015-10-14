@@ -605,4 +605,57 @@ class HistoryTestCase extends CakeTestCase
     }
     
     
+    public function testAggregate()
+    {
+        $history = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+788601461',
+            'timestamp' => '2012-03-06T11:06:34',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history);
+        $this->History->save($history);
+
+        $history = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+788601461',
+            'timestamp' => '2012-03-06T11:06:34',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history);
+        $this->History->save($history);
+
+        $history = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+78866788',
+            'timestamp' => '2012-03-07T11:07:34',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'script.dialogues[0].interactions[0]',
+            'dialogue-id'=>'script.dialogues[0]'
+            );
+        $this->History->create($history);
+        $this->History->save($history);
+
+        $histories = $this->History->aggregate("2011-01-01T00:00:00");
+
+        print_r($histories);
+        $this->assertEquals(
+            $histories,
+            array(
+                array(
+                    'date' => '2012-03-06',
+                    'value' => 2),
+                array(
+                    'date' => '2012-03-07',
+                    'value' => 1))
+            );
+    }
+
 }

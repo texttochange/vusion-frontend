@@ -9,7 +9,6 @@ require.config({
         'superfish': 'superfish-1.7.4/superfish.min',
         'supersubs': 'superfish-1.7.4/supersubs',
         'hoverintent': 'superfish-1.7.4/hoverIntent',
-        'datejs': 'datejs/date',
         'moment': 'moment',
         'chosen': 'chosen-1.0.jquery.min',
         'xregexp': 'xregexp-2.0.0/xregexp-all',
@@ -30,6 +29,15 @@ require.config({
         'table': 'ttc-table',
         'simulator': 'ttc-simulator',
         'screen': 'ttc-screen',
+        'metricsgraphics': 'metricsgraphics/metricsgraphics',
+        'd3': 'metricsgraphics/d3',
+        'graph-mg': 'ttc-graph',
+        'c3': 'c3/c3',
+        'graph-c3': 'ttc-graph-c3',
+        'nvd3': 'nvd3/nv.d3',
+        'graph-nvd3': 'ttc-graph-nvd3',
+        'lodash': 'lodash',
+        'twix': 'twix.min',
     },
     shim: {
     	'jquery-ui': {
@@ -71,6 +79,24 @@ require.config({
         'screen': {
             deps: ['jquery']
         },
+        'metricsgraphics': {
+            deps: ['d3', 'jquery']
+        },
+        'graph-mg': {
+            deps: ['metricsgraphics', 'jquery']
+        },
+        'c3': {
+            deps: ['d3']
+        },
+        'graph-c3': {
+            deps: ['c3']
+        },
+        'graph-nvd3': {
+            deps: ['nvd3', 'lodash', 'moment', 'twix']
+        },
+        'nvd3': {
+            deps: ['d3'],
+        },
         'vusion': {       //tobe moved in source file
             deps: ['jquery', 'ttc-utils', 'screen'],
         },
@@ -78,7 +104,6 @@ require.config({
             deps: [
                 'jquery', 
                 'moment',
-                'datejs',
                 'xregexp']
         },
         'table': {

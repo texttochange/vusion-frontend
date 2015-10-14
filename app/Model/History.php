@@ -256,6 +256,58 @@ class History extends ProgramSpecificMongoModel
         return $histories;
     }
     
+    public function _aggregate($since, $x, $y) 
+    {
+        $aggregates = array();
+        $pipeline = array(
+            array('$match' =>array(
+                'timestamp' => array('$gte' => $since),
+                'message-direction' => array('$exists' => 1))),
+            array('$group' => array(
+                '_id' => array(
+                    'year' =>  array('$substr' => array('$timestamp', 0, 4)),
+                    'month' => array('$substr' => array('$timestamp', 5, 2)),
+                    'day' => array('$substr' => array('$timestamp', 8, 2)),
+                    'direction' => '$message-direction'),
+                $y => array('$sum' => 1))),
+            array('$project' => array(
+                '_id'=> 0,
+                $x => array('$concat' => array('$_id.year', '-', '$_id.month', '-', '$_id.day')),
+                $y => 1,
+                'direction' => '$_id.direction')),
+            array(
+                '$sort' => array($x => 1))
+            );
+        $mongo = $this->getDataSource();
+        $cursor = $mongo->aggregateCursor($this, $pipeline);
+        foreach($cursor as $aggregate) {
+            $aggregates[] = $aggregate;
+        }
+        return $aggregates;
+    }
+
+    public function aggregateMg($since) 
+    {
+        $aggregates = $this->_aggregate($since, 'date', 'value');
+        $incoming = array_values(array_filter($aggregates, function($el) { return ($el['direction'] == 'incoming');}));
+        $outgoing = array_Values(array_filter($aggregates, function($el) { return ($el['direction'] == 'outgoing');}));
+        return $aggregates = array($incoming, $outgoing);        
+    }
+
+
+    public function aggregateNvd3($since) 
+    {
+        $aggregates = $this->_aggregate($since, 'x', 'y');
+        $incoming = array_values(array_filter($aggregates, function($el) { return ($el['direction'] == 'incoming');}));
+        $outgoing = array_Values(array_filter($aggregates, function($el) { return ($el['direction'] == 'outgoing');}));
+        return $aggregates = array(
+            array(
+                'key'=> 'incoming',
+                'values' => $incoming),
+            array(
+                'key'=> 'outgoing',
+                'values' => $outgoing));
+    }
     
     //Filter variables and functions
     public $filterFields = array(
