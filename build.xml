@@ -248,7 +248,7 @@
 
 
  <target name="acl" description="Run AclExtras">
- <exec executable="./app/Console/cake" failonerror="true">
+ <exec executable="/var/vusion/app/Console/cake" failonerror="true">
   	 <arg value="AclExtras.AclExtras" />
          <arg value="aco_sync" />
   </exec>
