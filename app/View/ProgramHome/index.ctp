@@ -1,45 +1,65 @@
 <?php
-    $this->RequireJs->scripts(array("jquery", "graph-nvd3", "moment"));
+    $this->RequireJs->scripts(array("jquery", "graph-nvd3", "moment", "dropit"));
 ?>
-<div class='Program Home index'>
-    <?php
-        $contentTitle           = __('Sending Next'); 
-        $contentActions         = array();
-        $containsDataControlNav = false;
-        $controller             = 'programHome';
-        
-        //echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav', 'controller'));
-   ?>
-	<div class="ttc-table-display-area" style='border:none;'>
+<div class='Program Home index dashboard'>
+	<div class="ttc-table-display-area" style='border:none;padding-top:0px'>
 	<div class="ttc-table-scrolling-area display-height-size">
-        <div class="table">
+        <div class='table'>
             <div class='row'>
                 <div class='cell'>
-                    <div>
-                    <h4>Message History</h4>
-            		<div id="history-brief" style="width:500px"></div>
-                    </div>
-                    <div>
-                    <h4>Participant Count</h4>
-                    <div id="history-brief2" style="width:500px"></div>
+                    <h3 style='margin-bottom:0px'><?php echo __('Dashboard') ?></h3>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='cell' style='text-align:right'>
+                    <span>View past</span>
+                    <select id="history-brief-selector">
+                      <option value="week">week</option>
+                      <option value="month">month</option>
+                      <option value="year">year</option>
+                    </select>
+                    <?php $this->RequireJs->runLine('
+                        $("#history-brief").history({"program": "'.$programDetails['url'].'"});');
+                    ?>
+                    <div id="history-brief" class="graph">
+                        <img src="/img/ajax-loader.gif">
                     </div>
                 </div>
-            
-                <div class='cell'>
-                    <div>
-                        <h4>Future messages</h4>
-                        <div id="history-brief3" style="width:500px"/>
+                <div class='cell' style='text-align:right'>
+                    <span>View next</span>
+                    <select id="schedule-brief-selector">
+                      <option value="day">day</option>
+                      <option selected value="week">week</option>
+                      <option value="month">month</option>
+                    </select>
+                    <?php
+                        $this->RequireJs->runLine('$("#schedule-brief").schedule({"program": "'.$programDetails['url'].'"});');
+                    ?>
+                    <div id="schedule-brief" class='graph' style='margin-left:20px'/>
+                        <img src="/img/ajax-loader.gif"> 
+                    </div>
+                </div>
+            </div>
+            <div class='row' style='height:10px'>
+
+            </div>
+            <div class='row'>
+                <div class='cell' style='text-align:right' >
+                    <span>View past</span>
+                    <select id="participant-brief-selector">
+                      <option value="week">week</option>
+                      <option value="month">month</option>
+                      <option value="month">year</option>
+                    </select>
+                    <?php 
+                        $this->RequireJs->runLine('$("#participant-brief").participant({"program": "'.$programDetails['url'].'"});');
+                    ?>
+                    <div id="participant-brief" class='graph'>
+                        <img src="/img/ajax-loader.gif" style='loader'>
                     </div>
                 </div>
             </div>
         </div>
-	<?php
-		$this->RequireJs->runLine('$("#history-brief").history({"program": "'.$programDetails['url'].'"});');
-        $this->RequireJs->runLine('$("#history-brief2").history({"program": "'.$programDetails['url'].'"});');
-        $this->RequireJs->runLine('$("#history-brief3").history({"program": "'.$programDetails['url'].'"});');
-
-        $this->RequireJs->runLine('$("#schedule-brief").schedule({"program": "'.$programDetails['url'].'"});');
-	?>
 	</div>
 	</div>
 </div>

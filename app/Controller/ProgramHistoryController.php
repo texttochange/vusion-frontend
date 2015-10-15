@@ -108,7 +108,11 @@ class ProgramHistoryController extends BaseProgramSpecificController
     {
         $requestSuccess = true;
         $time = $this->ProgramSetting->getProgramTimeNow(); 
-        $time->modify('-1 year');
+        $timeframe = 'week';
+        if (isset($this->params['query']['by'])) {
+            $timeframe = $this->params['query']['by'];
+        }
+        $time->modify("-1 $timeframe");
         $histories = $this->History->aggregateNvd3(DialogueHelper::fromPhpDateToVusionDate($time));
         $this->set(compact('histories', 'requestSuccess'));
         $this->render('index');

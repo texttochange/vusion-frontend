@@ -1040,6 +1040,16 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     {
         $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
     }
-    
+
+
+    public function aggregateNvd3()
+    {
+        $requestSuccess = true;
+        $time = $this->ProgramSetting->getProgramTimeNow(); 
+        $time->modify('-1 year');
+        $participants = $this->Participant->aggregateCountPerDay();
+        $this->set(compact('participants', 'requestSuccess'));
+        $this->render('index');
+    }
     
 }

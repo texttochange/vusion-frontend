@@ -515,6 +515,56 @@ class Participant extends ProgramSpecificMongoModel
         return $results;  
     }
     
+
+    public function aggregateCountPerDay($conditions = array(), $timeout = 30000)
+    {
+        $results = array();
+        $map = new MongoCode('function() {
+            var optinDate = new Date(Date.parse(this["last-optin-date"].substring(0,10)));
+            var endPeriode;
+            if (this["last-optout-date"] != null) {
+                endPeriode = new Date(this["last-optout-date"]);
+            } else {
+                endPeriode = new Date(Date.now());
+            }
+
+            function dateFormat(d) {
+                var yyyy = d.getFullYear().toString();
+                var mm = (d.getMonth()+1).toString();
+                var dd  = d.getDate().toString(); 
+                return yyyy + "-" + (mm[1]?mm:"0"+mm[0]) + "-" + (dd[1]?dd:"0"+dd[0]);
+            }
+        
+            for (var d = optinDate; d <= endPeriode; d.setDate(d.getDate() + 1)) {
+                current = dateFormat(d);
+                emit(current, 1); 
+            }
+        }');
+        $reduce = new MongoCode("function(k, vals) { 
+            return vals.length; 
+        }");
+        $query = array(
+            'mapreduce' => 'participants',
+            'map'=> $map,
+            'reduce' => $reduce,
+            'query' => array(),
+            'out' => 'inline');
+        
+        $mongo = $this->getDataSource();
+        $cursor = $mongo->mapReduce($query, $timeout);
+        if ($cursor == false){ 
+            return $results;
+        }
+        foreach ($cursor as $result) {
+            $results[] = array(
+                'x' => $result['_id'],
+                'y' => $result['value']);
+        }
+        return array(
+            'key' => 'opt-in',
+            'values' => $results);  
+    }
+
     
     public function getExportHeaders($conditions = null)
     {

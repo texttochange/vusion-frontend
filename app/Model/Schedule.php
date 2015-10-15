@@ -241,6 +241,54 @@ class Schedule extends ProgramSpecificMongoModel
         }
         return $aggregates;
     }
+
+    public function _aggregateSummary($until, $types) 
+    {
+        $aggregates = array();
+        $pipeline = array(
+            array('$match' => array(
+                'date-time' => array('$lte' => $until),
+                'object-type' => array('$in' => $types))),
+            array('$group' => array(
+                '_id' => array(
+                    'year' =>  array('$substr' => array('$date-time', 0, 4)),
+                    'month' => array('$substr' => array('$date-time', 5, 2)),
+                    'day' => array('$substr' => array('$date-time', 8, 2)),
+                    ),
+                'y' => array('$sum' => 1))),
+            array('$project' => array(
+                '_id'=> 0,
+                'x' => array('$concat' => array('$_id.year', '-', '$_id.month', '-', '$_id.day')),
+                'y' => 1)),
+            array('$sort' => array(
+                'x' => 1)));
+        $mongo = $this->getDataSource();
+        $cursor = $mongo->aggregateCursor($this, $pipeline);
+        foreach($cursor as $aggregate) {
+            $aggregates[] = $aggregate;
+        }
+        return $aggregates;
+    }
+
+    public function aggregateNvd3($until) 
+    {
+        $messageTypes = array(
+            'dialogue-schedule',
+            'reminder-schedule',
+            'feedback-schedule',
+            'unattach-schedule');
+        $actionTypes = array(
+            'action-schedule',
+            'deadline-schedule');
+        $results = array(
+            array( 
+                'key' => 'messages',
+                'values' => $this->_aggregateSummary($until, $messageTypes)),
+            array( 
+                'key' => 'actions',
+                'values' => $this->_aggregateSummary($until, $actionTypes)));
+        return $results;
+    }
     
     private function _compareSchedule($a, $b)
     {

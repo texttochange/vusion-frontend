@@ -87,6 +87,17 @@ class ProgramHomeController extends BaseProgramSpecificController
         $schedules = $this->Schedule->aggregate();
         $this->set(compact('schedules', 'requestSuccess'));
     }
+
+
+    public function aggregateNvd3()
+    {
+        $requestSuccess = true;
+        $time = $this->ProgramSetting->getProgramTimeNow(); 
+        $time->modify('+1 week');
+        $schedules = $this->Schedule->aggregateNvd3(DialogueHelper::fromPhpDateToVusionDate($time));
+        $this->set(compact('schedules', 'requestSuccess'));
+        $this->render('aggregate');
+    }
     
     
     public function restartWorker()

@@ -21,7 +21,8 @@
 		    'jstree/style.min',
             'metricsgraphics/metricsgraphics',
             'c3/c3',
-            'nvd3/nv.d3'
+            'nvd3/nv.d3',
+            'dropit/dropit'
 		    ));
 		echo $scripts_for_layout;
     ?><script>

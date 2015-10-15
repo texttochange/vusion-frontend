@@ -103,6 +103,95 @@ class ScheduleTestCase extends CakeTestCase
         $result = $this->Schedule->countScheduleFromUnattachedMessage('7');
         $this->assertEquals(0, $result);
     }
+
+
+    public function testAggregateNVD3()
+    {
+        
+        $schedules = array(
+            array(
+                'object-type' => 'reminder-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId2',
+                'date-time' => '2013-04-12T13:10',
+                'participant-phone' => '07'
+                ),
+            array(
+                'object-type' => 'deadline-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId2',
+                'date-time' => '2013-04-12T13:10',
+                'participant-phone' => '07'
+                ),
+            array(
+                'object-type' => 'dialogue-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId',
+                'date-time' => '2013-04-12T12:00',
+                'participant-phone' => '06'
+                ),
+             array(
+                'object-type' => 'reminder-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId2',
+                'date-time' => '2013-04-12T13:10',
+                'participant-phone' => '07'
+                ),
+            array(
+                'object-type' => 'dialogue-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId',
+                'date-time' => '2013-04-13T12:00',
+                'participant-phone' => '07'
+                ),
+            array(
+                'object-type' => 'unattach-schedule',
+                'unattach-id' => 'someId2',
+                'date-time' => '2013-04-13T11:00',
+                ),
+            array(
+                'object-type' => 'action-schedule',
+                'action' => 'feedback',
+                'date-time' => '2013-04-12T11:00',
+                ),
+            array(
+                'object-type' => 'dialogue-schedule',
+                'dialogue-id' => 'someId',
+                'interaction-id' => 'someOtherId2',
+                'date-time' => '2013-04-14T13:00',
+                'participant-phone' => '07'
+                ),
+
+            );
+        
+        foreach ($schedules as $schedule) {
+            $this->Schedule->create($schedule['object-type']);
+            $this->Schedule->save($schedule);
+        }
+        
+        $results = $this->Schedule->aggregateNvd3("2013-04-14T00:00:00");
+        $this->assertEquals(
+            $results, 
+            array(
+                array(
+                    'key' => 'messages',
+                    'values' => array(
+                        array(
+                            'x' => '2013-04-12',
+                            'y' => 3),
+                        array(
+                            'x' => '2013-04-13',
+                            'y' => 2)
+                        )),
+                array(
+                    'key' => 'actions',
+                    'values' => array(
+                        array(
+                            'x' => '2013-04-12',
+                            'y' => 2))
+                    )));
+    }
+
     
     public function testGetUniqueParticipantPhone()
     {

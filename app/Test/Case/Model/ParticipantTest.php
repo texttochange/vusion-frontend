@@ -1955,5 +1955,50 @@ class ParticipantTestCase extends CakeTestCase
             $result);
     }
 
+    public function testAggregateCountPerDay() {
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+        $now = new DateTime('now', timezone_open('Africa/Kampala')); 
+        $pastOneDay = $now->modify('-1 day')->format("Y-m-d\TH:i:s");
+        $pastTwoDay = $now->modify('-1 day')->format("Y-m-d\TH:i:s");
+        $pastThreeDay = $now->modify('-1 day')->format("Y-m-d\TH:i:s");
+        $now = new DateTime('now', timezone_open('Africa/Kampala'));
+        $now = $now->format("Y-m-d\TH:i:s");
+
+        $participant = array(
+            'phone' => '6',
+            'last-optin-date' => $pastThreeDay,
+            'last-optout-date' => $pastTwoDay);
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $participant = array('phone' => '7', 'last-optin-date' => $pastThreeDay);
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $participant = array('phone' => '8', 'last-optin-date' => $now);
+        $this->Participant->create();
+        $this->Participant->save($participant);
+
+        $participants = $this->Participant->find('all');
+
+        $results = $this->Participant->aggregateCountPerDay();
+        $this->assertEquals(
+            $results,
+            array(
+                'key' => 'participant',
+                'values' => array(
+                    array(
+                        'x' => substr($pastThreeDay, 0, 10),
+                        'y' => 2),
+                    array(
+                        'x' => substr($pastTwoDay, 0, 10),
+                        'y' => 2),
+                    array(
+                        'x' => substr($pastOneDay, 0, 10),
+                        'y' => 1),
+                    array(
+                        'x' => substr($now, 0, 10),
+                        'y' => 2))));
+    }
     
 }

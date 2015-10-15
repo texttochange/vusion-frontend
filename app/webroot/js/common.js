@@ -38,6 +38,7 @@ require.config({
         'graph-nvd3': 'ttc-graph-nvd3',
         'lodash': 'lodash',
         'twix': 'twix.min',
+        'dropit': 'dropit',
     },
     shim: {
     	'jquery-ui': {
@@ -75,6 +76,9 @@ require.config({
         },
         'form2js-utils': {
             deps: ['form2js']
+        },
+        'dropit': {
+            deps: ['jquery']
         },
         'screen': {
             deps: ['jquery']

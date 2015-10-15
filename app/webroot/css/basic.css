@@ -1777,3 +1777,27 @@
 #ui-timepicker-div-fixedtime dt {
     width: 16em;
 }
+
+.dashboard h4 {
+    color: #2c6877;
+}
+
+.ttc-table-display-area .nvtooltip table {
+    width: inherit;
+}
+
+.dashboard .graph {
+    width: 500px;
+    background-color: #DDDDDD;
+    height: 200px;
+}
+
+.dashboard .graph img {
+    padding-right: 240px;
+    padding-top: 80px;
+    width:40px;
+}
+
+.dashboard select {
+    font-size: 16px;
+}
