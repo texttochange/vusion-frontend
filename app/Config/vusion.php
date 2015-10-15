@@ -52,8 +52,12 @@ $config = array(
             'email' => 'vusion-issues@texttochange.com',
             'subjectPrefix' => '[vusion-issues]'
             ),
-        'countriesPrefixesFile' => 'files/countries and codes.csv',
         'backendUser' => 'supervisordUser',
-        'importMaxParticipants' => 10000
+        'importMaxParticipants' => 10000,
+        'countriesPrefixesFile' => 'files/countries/countries.csv',
+        'mash' => array(
+            'url' => 'http://192.168.50.2:3000/api/v1',
+            'apiKey' => 'a9ffa708b138f37afdc041e7a1b52e7175a74a069e274fe800a62ca772c5da4bfcac426db4a1e3fe6bd6c422372cb4c597668c067eac11fa9df25dac83f4ecf3'
+            ),
         )
     );   

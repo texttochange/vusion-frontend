@@ -55,10 +55,7 @@
                 'action' => 'getFilterParameterOptions',
                 'ext' => 'json',
                 '?' => $urlParameters));
-            $this->Js->get('document')->event(
-                $options['_ajax'],
-                'loadFilterParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");'
-            );
+            $this->RequireJs->runLine('loadFilterParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");');
             $filterParameterOptions[$parameter] = array("Loading...");
         }
     }

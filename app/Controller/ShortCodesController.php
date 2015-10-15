@@ -10,7 +10,7 @@ class ShortCodesController extends AppController
         'ShortCode',
         'Template');
     var $components = array(
-        'PhoneNumber'); 
+        'Country'); 
     var $helpers = array(
         'Js' => array('Jquery'));
     
@@ -92,8 +92,8 @@ class ShortCodesController extends AppController
     
     protected function setOptions()
     {
-        $countries                  = $this->PhoneNumber->getCountries();
-        $prefixesByCountriesOptions = $this->PhoneNumber->getPrefixesByCountries();
+        $countries                  = $this->Country->getNamesByNames();
+        $prefixesByCountriesOptions = $this->Country->getPrefixesByNames();
         $errorTemplateOptions       = $this->Template->getTemplateOptions('unmatching-keyword');
         
         $maxCharacterPerSmsOptions = array_combine(

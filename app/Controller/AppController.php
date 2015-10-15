@@ -41,12 +41,12 @@ class AppController extends Controller
                 )
             ),
         'Acl',
-        'Cookie', 
-        'PhoneNumber',
+        'Cookie',
         'BackendLog',
         'Stats',
         'CreditManager',
-        'UserLogMonitor');
+        'UserLogMonitor',
+        'Country');
     
     var $helpers = array(
         'PhoneNumber',
@@ -123,7 +123,7 @@ class AppController extends Controller
             $this->layout = 'default';
         } else {
             //TODO this hase to move in the relevant contollers
-            $countryIndexedByPrefix = $this->PhoneNumber->getCountriesByPrefixes();
+            $countryIndexedByPrefix = $this->Country->getNamesByPrefixes();
             $this->set(compact('countryIndexedByPrefix'));
         }
     }

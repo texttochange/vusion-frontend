@@ -75,7 +75,7 @@
         __('Import'), 
         $programDetails['url'],
         'programParticipants',
-        'import',
+        'importFile',
         array('class' => 'ttc-button'));
 
     $contentActions[] = $this->Html->tag(
