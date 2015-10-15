@@ -1,5 +1,5 @@
 <?php
-    $this->RequireJs->scripts(["jstree"]);
+    $this->RequireJs->scripts(array("jstree", "jquery-ui-timepicker"));
 ?>
 <div class="admin-action">
     <div class="actions">
