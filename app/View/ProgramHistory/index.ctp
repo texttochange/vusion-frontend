@@ -1,5 +1,5 @@
 <?php
-    $this->RequireJs->scripts(array("jquery"));
+    $this->RequireJs->scripts(array("jquery", "jquery-ui-timepicker"));
 ?>
 <div class="status index">
     <?php
