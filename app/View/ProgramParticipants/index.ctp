@@ -1,3 +1,6 @@
+<?php
+    $this->RequireJs->scripts(array("jquery"));
+?>
 <div class="participants index">
 	<?php
 	$contentTitle = __('Participants');

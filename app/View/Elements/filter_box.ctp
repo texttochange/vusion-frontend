@@ -1,5 +1,5 @@
 <?php
-    $this->RequireJs->scripts(array("ttc-utils"));
+    $this->RequireJs->scripts(array("ttc-utils", "jquery-ui-timepicker"));
 ?>
 <div class="ttc-data-control">
     <div id="data-control-nav" class="ttc-paging paging">
