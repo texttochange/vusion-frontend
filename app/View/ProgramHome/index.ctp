@@ -49,7 +49,7 @@
                     <select id="participant-brief-selector">
                       <option value="week">week</option>
                       <option value="month">month</option>
-                      <option value="month">year</option>
+                      <option value="year">year</option>
                     </select>
                     <?php 
                         $this->RequireJs->runLine('$("#participant-brief").participant({"program": "'.$programDetails['url'].'"});');
