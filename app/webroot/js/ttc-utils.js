@@ -116,7 +116,7 @@ function isFormSubmit(element) {
     return $("#dynamic-generic-program-form").attr("disabled") != "disabled";
 }
 
-function pullBackendNotifications(url) {
+/*function pullBackendNotifications(url) {
     $.ajax({ 
             url: url, 
             success: function(data){
@@ -132,7 +132,30 @@ function pullBackendNotifications(url) {
             timeout: 500,
             error: vusionAjaxError,
     });
+}*/
+
+function pullBackendNotifications(url) {
+    var refreshRate = 10000;
+    setInterval(function(){    
+            $.ajax({ 
+                    url: url, 
+                    success: function(data){
+                        $('#connectionState').hide();
+                        if (data['logs']) {
+                            $("#notifications").empty();
+                            for (var x = 0; x < data['logs'].length; x++) {
+                                data['logs'][x] = data['logs'][x].replace(data['logs'][x].substr(1,19),"<span style='font-weight:bold'>"+data['logs'][x].substr(1,19)+"</span>");
+                                $("#notifications").append(data['logs'][x]+"<br \>");
+                            }
+                        }
+                    },
+                    timeout: 500,
+                    error: vusionAjaxError,
+            });
+    }, refreshRate);
+    
 }
+
 
 
 function updateClock(){
