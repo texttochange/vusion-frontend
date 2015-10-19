@@ -268,7 +268,9 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         
         $conditions = $this->Filter->getConditions(
             $this->Participant,
-            array('simulate' => false),
+            array('$or' => array(
+                array('simulate' => false),
+                array('simulate' => array('$exists' => false)))),
             array('Schedule' => $this->Schedule),
             false);
         
