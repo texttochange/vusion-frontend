@@ -12,6 +12,7 @@
         },
         schedule: function(options) {
             options['eltId'] = $(this).attr('id');
+            options['yAxisRight'] = false;
             ScheduleGraph(options);
             buildSelector(options);
         },
@@ -93,7 +94,7 @@
         for (var i=0; i<data.length; i++) {
             yMax.push(d3.max(data[i]['values'], function(d) { return d.y; }));
         }
-        return d3.max(yMax);
+        return d3.max(yMax) + 1;
     }
 
 
@@ -103,7 +104,8 @@
             'graphType': null,
             'iconName': null,
             'selector': null,
-            'eltId': null
+            'eltId': null,
+            'yAxisRight': true,
         }
         $.extend(settings, options);
         options = settings; //Need to sync option of the selector
@@ -118,11 +120,11 @@
                 .margin({"left":30,"right":30,"top":10,"bottom":40})
                 .height(height)
                 .yScale(d3.scale.sqrt())
-                .rightAlignYAxis(true)
+                .rightAlignYAxis(options['yAxisRight'])
                 ;
         
             chart.xAxis
-                .ticks(d3.time.days, 1)
+                .tickSize(3)
                 .tickFormat(function(d) {
                     date = moment(d).format('YYYY-MM-DD');
                     now = moment().startOf('day').format('YYYY-MM-DD');
@@ -164,6 +166,20 @@
         });
     }
 
+	function getData4Graph(url, options) {
+        $.ajax({
+            url: url,
+            data: (('selector' in options)? {'by': options['selector']}: null),
+            type:'GET',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(response) {
+                data = response['data'];
+                buildGraph(data, options);
+            }
+        });
+    }
+
     function HistoryGraph(options) {
         var url = "/" + options['program'] + "/ProgramHistory/aggregateNvd3.json";
         setDefault(options, 'selector', 'week')
@@ -183,19 +199,6 @@
         getData4Graph(url, options);
     }
 
-    function getData4Graph(url, options) {
-        $.ajax({
-            url: url,
-            data: (('selector' in options)? {'by': options['selector']}: null),
-            type:'GET',
-            contentType: 'application/json; charset=utf-8',
-            dataType: 'json',
-            success: function(response) {
-                data = response['data'];
-                buildGraph(data, options);
-            }
-        });
-    }
 
     function ParticipantGraph(options) {
         var url = "/" + options['program']+"/ProgramParticipants/aggregateNvd3.json";
