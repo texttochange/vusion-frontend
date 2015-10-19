@@ -1,5 +1,5 @@
 <?php
-    $this->RequireJs->scripts(array("jquery", "jquery-ui-timepicker"));
+    $this->RequireJs->scripts(array("jquery"));
 ?>
 <div class="participants index">
 	<?php

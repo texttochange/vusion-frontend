@@ -1,5 +1,5 @@
 <?php
-    $this->RequireJs->scripts(array("ttc-utils"));
+    $this->RequireJs->scripts(array("ttc-utils", "jquery-ui-timepicker"));
     $containsFilter         = (isset($containsFilter) ? $containsFilter : false);
     $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControlNav : false);
 ?>
