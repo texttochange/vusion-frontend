@@ -117,7 +117,7 @@
                     useInteractiveGuideline: true,
                     showLegend: true,
                 })
-                .margin({"left":30,"right":30,"top":10,"bottom":40})
+                .margin({"left":30,"right":30,"top":10,"bottom":20})
                 .height(height)
                 .yScale(d3.scale.sqrt())
                 .rightAlignYAxis(options['yAxisRight'])
@@ -156,12 +156,7 @@
                 .datum(data)
                 .call(chart)
                 .style({ 'height': height })
-                .append("svg:image")
-                        .attr('x', 0)
-                        .attr('y', 0)
-                        .attr('width', 20)
-                        .attr('height', 20)
-                        .attr("xlink:href","/img/" + options['iconName'] + "-icon-20.png");
+            ;
             return chart;
         });
     }

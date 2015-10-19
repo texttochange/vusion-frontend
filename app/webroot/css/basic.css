@@ -1786,18 +1786,29 @@
     width: inherit;
 }
 
+.dashboard .graph-cell {
+    text-align: left;
+}
+
 .dashboard .graph {
     width: 500px;
-    background-color: #DDDDDD;
+    /*background-color: #DDDDDD;*/
     height: 200px;
+    text-align: center;
 }
 
 .dashboard .graph img {
-    padding-right: 240px;
     padding-top: 80px;
     width:40px;
 }
 
-.dashboard select {
-    font-size: 16px;
+.dashboard .caption {
+    font: normal 13px helvetica;
+    text-align: right;
+    padding-right: 32px;
 }
+
+.nvd3 .nv-axis .nv-axisMaxMin text {
+    font-weight: normal !important;
+}
+
