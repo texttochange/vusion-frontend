@@ -1,5 +1,5 @@
 <?php
-    $this->RequireJs->scripts(array("ttc-utils"));
+    $this->RequireJs->scripts(array("ttc-utils", "ttc-backend-notification"));
 ?>
 <?php if ($this->AclLink->_allow('controllers/ProgramLogs')) { ?>
 <div id='notifications' class='ttc-notification'>
@@ -8,14 +8,11 @@
         $newDate = $this->Time->format('d/m/Y H:i:s', substr($log, 1, 19));
         echo substr_replace($log, "<span style='font-weight:bold'>".$newDate."</span>", 1, 19)."<br />";
     }
-    $this->RequireJs->runLine(        
-        'pullBackendNotifications("'.$this->Html->url(
-            array('program'=>$programDetails['url'], 'controller'=>'programLogs', 'action'=>'getBackendNotifications.json')).'");'
-        
-        /*'setInterval(function(){pullBackendNotifications("'.$this->Html->url(
-            array('program'=>$programDetails['url'], 'controller'=>'programLogs', 'action'=>'getBackendNotifications.json')).'")}, 10000);'
-        */
-        );
 ?>
 </div>
-<?php } ?>
+<?php
+    $this->RequireJs->runLine(        
+    '$("#notifications").pullBackend("'.$this->Html->url(
+        array('program'=>$programDetails['url'], 'controller'=>'programLogs', 'action'=>'getBackendNotifications.json')).'");'
+    );
+} ?>
