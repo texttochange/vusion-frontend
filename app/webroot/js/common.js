@@ -84,6 +84,9 @@ require.config({
         'nvd3': {
             deps: ['d3'],
         },
+        'twix': {
+            deps: ['moment'],
+        },
         'vusion': {       //tobe moved in source file
             deps: ['jquery', 'ttc-utils', 'screen'],
         },
