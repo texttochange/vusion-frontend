@@ -16,12 +16,10 @@
                 if (errorThrown == 'Forbidden') {
                     var refreshRate = 2000;
                     while (true) {
-                        refreshRate *= 2;
                         if (this.reschedule) {
-                            setTimeout(function(){el.update(true);}, refreshRate);
-                            
+                            setTimeout(function(){el.update(true);}, refreshRate);                            
                         }
-                        refreshRate++;
+                        refreshRate *= 2;
                     }
                 }
                 vusionAjaxError(jqXHR, textStatus, errorThrown);
