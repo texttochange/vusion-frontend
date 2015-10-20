@@ -1,5 +1,5 @@
 <?php
-    $this->RequireJs->scripts(array("jquery", "graph-nvd3", "moment", "dropit"));
+    $this->RequireJs->scripts(array("jquery", "graph-nvd3", "moment"));
 ?>
 <div class='Program Home index dashboard'>
 	<div class="ttc-table-display-area" style='border:none;padding-top:0px'>

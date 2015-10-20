@@ -29,16 +29,11 @@ require.config({
         'table': 'ttc-table',
         'simulator': 'ttc-simulator',
         'screen': 'ttc-screen',
-        'metricsgraphics': 'metricsgraphics/metricsgraphics',
-        'd3': 'metricsgraphics/d3',
-        'graph-mg': 'ttc-graph',
-        'c3': 'c3/c3',
-        'graph-c3': 'ttc-graph-c3',
+        'd3': 'd3-3.5.6.min',
         'nvd3': 'nvd3/nv.d3',
         'graph-nvd3': 'ttc-graph-nvd3',
         'lodash': 'lodash',
         'twix': 'twix.min',
-        'dropit': 'dropit',
     },
     shim: {
     	'jquery-ui': {
@@ -82,18 +77,6 @@ require.config({
         },
         'screen': {
             deps: ['jquery']
-        },
-        'metricsgraphics': {
-            deps: ['d3', 'jquery']
-        },
-        'graph-mg': {
-            deps: ['metricsgraphics', 'jquery']
-        },
-        'c3': {
-            deps: ['d3']
-        },
-        'graph-c3': {
-            deps: ['c3']
         },
         'graph-nvd3': {
             deps: ['nvd3', 'lodash', 'moment', 'twix']
