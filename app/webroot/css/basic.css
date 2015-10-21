@@ -1811,3 +1811,16 @@
     font-weight: normal !important;
 }
 
+.most-active .title {
+    padding-left: 10px;
+}
+
+.most-active ul{
+    padding-left: 20px;
+}
+
+.most-active li.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100px;
+}

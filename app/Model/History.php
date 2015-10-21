@@ -309,6 +309,33 @@ class History extends ProgramSpecificMongoModel
                 'values' => $outgoing));
     }
     
+
+    public function getMostActive($since, $id, $x, $y)
+    {
+        $aggregates = array();
+        $pipeline = array(
+            array('$match' =>array(
+                'timestamp' => array('$gte' => $since),
+                'message-direction' => 'incoming',
+                $id => array('$exists' => true))),
+            array('$group' => array(
+                '_id' => "$$id",
+                $y => array('$sum' => 1))),
+            array('$project' => array(
+                '_id'=> 0,
+                $x => '$_id',
+                $y => 1)),
+            array('$sort' => array(
+                $y => -1))
+            );
+        $mongo = $this->getDataSource();
+        $cursor = $mongo->aggregateCursor($this, $pipeline);
+        foreach($cursor as $aggregate) {
+            $aggregates[] = $aggregate;
+        }
+        return $aggregates;   
+    }
+
     //Filter variables and functions
     public $filterFields = array(
         'participant-phone' => array(

@@ -66,6 +66,30 @@
                         $this->RequireJs->runLine('$("#participant-brief").participant({"program": "'.$programDetails['url'].'"});');
                     ?>
                 </div>
+                <div class='cell graph-cell' style='border:dashed 1px black' >
+                    <div class='table most-active'>
+                        <div class='row'>
+                            <div class='cell'><?php echo __("Most active message receivers:")?></div>
+                        </div>
+                        <div class='row'>
+                            <div id='most-active' class='cell title'>
+                                <div><?php echo __('Dialogues'); ?>:</div>
+                                <div id="most-active-dialogue">
+                                   <img src="/img/ajax-loader.gif" style='loader'>
+                                </div>
+                            </div>
+                            <div class='cell title'>
+                                <div><?php echo __('Requests'); ?>:</div>
+                                <div id="most-active-request">
+                                     <img src="/img/ajax-loader.gif" style='loader'>
+                                </div>
+                            </div>
+                            <?php
+                                $this->RequireJs->runLine('$("#most-active").mostActive({"program": "'.$programDetails['url'].'"})')
+                            ?>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 	</div>

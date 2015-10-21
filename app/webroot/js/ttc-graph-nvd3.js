@@ -3,7 +3,6 @@
     var moment = require('moment'),
         eltIds = {};
 
-    
     $.fn.extend({
         history: function(options) {
             options['eltId'] = $(this).attr('id');
@@ -21,6 +20,10 @@
             ParticipantGraph(options);
             buildSelector(options);
         },
+        mostActive: function(options) {
+        	options['eltId'] = $(this).attr('id');
+            BuildMostActiveLists(options);	
+        }
     });
 
 
@@ -219,6 +222,27 @@
            options['iconName'] = 'participant';
 
         getData4Graph(url, options);
+    }
+
+
+    function BuildMostActiveLists(options) {
+    	var url = "/" + options['program']+"/ProgramHistory/mostActive.json";
+		$.ajax({
+			url: url,
+			dataType: 'json',
+			success: function(response) {
+				var data = response['data'];
+				for (var i = 0; i<data.length; i++) {
+					var name = data[i]['name'];
+					$("#most-active-" + name).empty().append($('<ul></ul>'));
+					$.each(data[i]['values'], function(index, item){
+						$("#most-active-" + name + " ul").append($('<li class="ellipsis"></li>').append('('+ item['count'] +') ' + item[name+"-name"]));
+					});
+				}
+			},
+			timeout: 10000,
+			error: vusionAjaxError
+		});
     }
 
     function setDefault(options, key, value) {

@@ -636,6 +636,29 @@ class Dialogue extends ProgramSpecificMongoModel
         return $participant;
     }
 
+    public function _getNameByDialogueId() 
+    {
+        $dialogues = $this->find('all', array(
+            'conditions' => array('activated' => 1),
+            'fields' => array('dialogue-id', 'name')
+        ));
+        $nameByDialogueId = Set::combine($dialogues, '{n}.Dialogue.dialogue-id', '{n}.Dialogue.name');
+        return $nameByDialogueId;
+    }
+
+    public function fromDialogueIdsToNames($dialogueActivities)
+    {
+        $nameByDialogueId = $this->_getNameByDialogueId();
+        foreach ($dialogueActivities as &$dialogueActivity) {
+            if (isset($nameByDialogueId[$dialogueActivity['dialogue-id']])) {
+                $dialogueActivity['dialogue-name'] = $nameByDialogueId[$dialogueActivity['dialogue-id']];
+            } else {
+                 $dialogueActivity['dialogue-name'] = __('Dialogue not found');
+            }
+        }
+        return $dialogueActivities;
+    }
+
     public function isInteractionAnswerExists($dialogue_id, $interaction_id, $answer)
     {
         $dialogue = $this->getActiveDialogue($dialogue_id);
