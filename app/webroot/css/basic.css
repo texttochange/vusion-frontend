@@ -1247,6 +1247,7 @@
                 min-width: 190px;
                 margin-bottom: 11px;
                 border: 2px solid #d3d3d3;
+                height: 95px;
         }
         
         .ttc-program-stats-inside  .stat tr:nth-child(even) {

@@ -12,11 +12,12 @@
         
         function pullBackendNotifications(el, url) {
             var numberOfConsecutiveErrors = 0,
-            normalRefreshRate = 20000, 
+            normalRefreshRate = 200, 
             currentRefreshRate = normalRefreshRate;
             
             function processError(jqXHR, textStatus, errorThrown) {
                 numberOfConsecutiveErrors++;
+                displayAjaxLoader(el);
                 //update the current refresh rate
                 currentRefreshRate = currentRefreshRate * numberOfConsecutiveErrors;  
                 setTimeout(function(){el.update();}, currentRefreshRate);            
@@ -39,10 +40,14 @@
                         data['logs'][x] = data['logs'][x].replace(data['logs'][x].substr(1,19),"<span style='font-weight:bold'>"+data['logs'][x].substr(1,19)+"</span>");
                         $("#notifications").append(data['logs'][x]+"<br \>");
                     }
+                } else {
+                    displayAjaxLoader(el);
                 }
-                return;
             }
             
+            function displayAjaxLoader(el) {
+                el.prepend('<div class="ttc-help-box"><img src="/img/ajax-loader.gif" class="simulator-image-load"></div>');            
+            }
             
             el.update = function() {
                 $.ajax({ 
