@@ -11,15 +11,17 @@
         
         
         function pullBackendNotifications(el, url) {
-            
-            function processError(jqXHR, textStatus, errorThrown) {                
+            var myFuncCalls = 0;
+            function processError(jqXHR, textStatus, errorThrown) {
+                myFuncCalls++;
                 if (errorThrown == 'Forbidden') {
                     var refreshRate = 2000;
                     while (true) {
+                        refreshRate *= myFuncCalls;
                         if (this.reschedule) {
-                            setTimeout(function(){el.update(true);}, refreshRate);                            
+                            return setTimeout(function(){el.update(true);}, refreshRate);                            
                         }
-                        refreshRate *= 2;
+                        
                     }
                 }
                 vusionAjaxError(jqXHR, textStatus, errorThrown);
@@ -29,7 +31,7 @@
                 $('#connectionState').hide();
                 startPulling(data);
                 if (this.reschedule) {
-                    setTimeout(function(){el.update(true);}, 1000);
+                    setTimeout(function(){el.update(true);}, 10000);
                 }
             } 
             
