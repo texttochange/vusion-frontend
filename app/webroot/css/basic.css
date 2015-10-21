@@ -1791,8 +1791,7 @@
 }
 
 .dashboard .graph {
-    width: 500px;
-    /*background-color: #DDDDDD;*/
+    min-width: 200px;
     height: 200px;
     text-align: center;
 }

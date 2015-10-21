@@ -1,7 +1,7 @@
 (function() {
 
-    var moment = require('moment');
-    var height = 200;
+    var moment = require('moment'),
+        eltIds = {};
 
     
     $.fn.extend({
@@ -91,6 +91,7 @@
 
     function getYMax(data) {
         var yMax = [];
+        yMax.push(4);
         for (var i=0; i<data.length; i++) {
             yMax.push(d3.max(data[i]['values'], function(d) { return d.y; }));
         }
@@ -116,12 +117,10 @@
                     transitionDuration: 300,
                     useInteractiveGuideline: true,
                     showLegend: true,
-                })
-                .margin({"left":30,"right":30,"top":10,"bottom":20})
-                .height(height)
-                .yScale(d3.scale.sqrt())
-                .rightAlignYAxis(options['yAxisRight'])
-                ;
+                    margin: {"left":30,"right":30,"top":10,"bottom":20},
+                    yScale: d3.scale.sqrt(),
+                    rightAlignYAxis: options['yAxisRight'],
+                });
         
             chart.xAxis
                 .tickSize(3)
@@ -132,34 +131,52 @@
                         return 'today';
                     }
                     return d3.time.format('%d %b %y')(new Date(d));
-                })
-            ;
+                });
             
-               var range = getGraphTimeRange(options['selector'], options['iconName']);
+            var range = getGraphTimeRange(options['selector'], options['iconName']);
             data = fillMissingValues(range, data);
-
             chart.yAxis
                 .tickFormat(function(d) {
                     return d3.format('d')(d);
-                })
-            ;
+                });
+
             var yMax = getYMax(data);
             chart
                 .yDomain([0, yMax])
                 .showYAxis(true)
-                .showXAxis(true)
-            ;
+                .showXAxis(true);
 
+           	width = $("#" + options['eltId']).width(),
+        	height = $("#" + options['eltId']).height(),
             $("#" + options['eltId']).empty();
             d3.select("#" + options['eltId'])
                 .append('svg')
                 .datum(data)
                 .call(chart)
-                .style({ 'height': height })
+                .attr("width", '100%')
+			    .attr("height", '100%')
+			    .attr('viewBox','0 0 '+Math.min(width,height)+' '+Math.min(width,height))
+			    .attr('preserveAspectRatio','xMinYMin')
+			    .append("g")
+			    .attr("transform", "translate(" + Math.min(width,height) / 2 + "," + Math.min(width,height) / 2 + ")");
             ;
+            eltIds[options['eltId']] = chart;
             return chart;
         });
     }
+
+    
+    $(window).resize(function(){
+		rescaleGraphWidth();
+	});
+
+    function rescaleGraphWidth() {
+    	$.each(eltIds, function(eltId, chart) {
+    		d3.select("#"+eltId+" svg")
+    			.call(chart);
+    	});
+    };
+	
 
 	function getData4Graph(url, options) {
         $.ajax({

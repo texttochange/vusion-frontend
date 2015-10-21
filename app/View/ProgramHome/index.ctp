@@ -4,7 +4,7 @@
 <div class='Program Home index dashboard'>
 	<div class="ttc-table-display-area" style='border:none;padding-top:0px'>
 	<div class="ttc-table-scrolling-area display-height-size">
-        <div class='table'>
+        <div class='table' style='width:100%'>
             <div class='row'>
                 <div class='cell'>
                     <h3 style='margin-bottom:0px'><?php echo __('Dashboard') ?></h3>
