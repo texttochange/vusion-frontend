@@ -561,7 +561,7 @@ class Participant extends ProgramSpecificMongoModel
                 'y' => $result['value']);
         }
         return array(array(
-            'key' => 'opt-in',
+            'key' => __('opt-in'),
             'values' => $results));
     }
 

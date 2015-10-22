@@ -302,10 +302,10 @@ class History extends ProgramSpecificMongoModel
         $outgoing = array_Values(array_filter($aggregates, function($el) { return ($el['direction'] == 'outgoing');}));
         return $aggregates = array(
             array(
-                'key'=> 'incoming',
+                'key'=> __('received'),
                 'values' => $incoming),
             array(
-                'key'=> 'outgoing',
+                'key'=> __('sent'),
                 'values' => $outgoing));
     }
     
@@ -314,8 +314,7 @@ class History extends ProgramSpecificMongoModel
     {
         $aggregates = array();
         $pipeline = array(
-            array('$match' =>array(
-                'timestamp' => array('$gte' => $since),
+            array('$match' => array(
                 'message-direction' => 'incoming',
                 $id => array('$exists' => true))),
             array('$group' => array(
@@ -328,6 +327,9 @@ class History extends ProgramSpecificMongoModel
             array('$sort' => array(
                 $y => -1))
             );
+        if ($since != null) {
+            $pipeline[0]['$match']['timestamp'] = array('$gte' => $since);
+        }
         $mongo = $this->getDataSource();
         $cursor = $mongo->aggregateCursor($this, $pipeline);
         foreach($cursor as $aggregate) {

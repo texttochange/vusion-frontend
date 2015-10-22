@@ -22,7 +22,8 @@
         },
         mostActive: function(options) {
         	options['eltId'] = $(this).attr('id');
-            BuildMostActiveLists(options);	
+            BuildMostActiveLists(options);
+            buildSelector(options);
         }
     });
 
@@ -88,6 +89,9 @@
             case 'participant':
                 ParticipantGraph(options);
                 break;
+            case 'most-active':
+            	BuildMostActiveLists(options);
+            	break;
         }
     }
 
@@ -110,21 +114,28 @@
             'selector': null,
             'eltId': null,
             'yAxisRight': true,
+            'colors': null,
         }
         $.extend(settings, options);
         options = settings; //Need to sync option of the selector
 
+        var margin = {"left":30,"right":10,"top":10,"bottom":20};
+        if (options['yAxisRight']) {
+        	margin = {"left":10,"right":30,"top":10,"bottom":20};
+        }
         nv.addGraph(function() {
             chart = nv.models.lineChart()
                 .options({
                     transitionDuration: 300,
                     useInteractiveGuideline: true,
                     showLegend: true,
-                    margin: {"left":30,"right":30,"top":10,"bottom":20},
+                    margin: margin,
                     yScale: d3.scale.sqrt(),
                     rightAlignYAxis: options['yAxisRight'],
                 });
-        
+            if (options['colors'] != null) {
+	            chart.color(options['colors']);
+	        }
             chart.xAxis
                 .tickSize(3)
                 .tickFormat(function(d) {
@@ -197,9 +208,10 @@
 
     function HistoryGraph(options) {
         var url = "/" + options['program'] + "/ProgramHistory/aggregateNvd3.json";
-        setDefault(options, 'selector', 'week')
-           options['graphType'] = 'history';
-           options['iconName'] = 'message';
+        setDefault(options, 'selector', 'week');
+        options['graphType'] = 'history';
+        options['iconName'] = 'message';
+        options['colors'] = ["#5E6195","#D6CD7A"];
 
         getData4Graph(url, options);
     }
@@ -207,9 +219,10 @@
     //TODO DRY ajax and timeout and error
     function ScheduleGraph(options) {
         var url = "/" + options['program']+ "/ProgramHome/aggregateNvd3.json";
-        setDefault(options, 'selector', 'week')
-           options['graphType'] = 'schedule';
-           options['iconName'] = 'schedule';
+        setDefault(options, 'selector', 'week');
+        options['graphType'] = 'schedule';
+        options['iconName'] = 'schedule';
+        options['colors'] = ["#FEB6B6","#8D2626"];
 
         getData4Graph(url, options);
     }
@@ -218,8 +231,8 @@
     function ParticipantGraph(options) {
         var url = "/" + options['program']+"/ProgramParticipants/aggregateNvd3.json";
         setDefault(options, 'selector', 'week')
-           options['graphType'] = 'participant';
-           options['iconName'] = 'participant';
+        options['graphType'] = 'participant';
+        options['iconName'] = 'participant';
 
         getData4Graph(url, options);
     }
@@ -227,16 +240,21 @@
 
     function BuildMostActiveLists(options) {
     	var url = "/" + options['program']+"/ProgramHistory/mostActive.json";
+    	options['graphType'] = 'most-active';
 		$.ajax({
 			url: url,
+			data: (('selector' in options)? {'by': options['selector']}: null),
 			dataType: 'json',
 			success: function(response) {
 				var data = response['data'];
 				for (var i = 0; i<data.length; i++) {
 					var name = data[i]['name'];
-					$("#most-active-" + name).empty().append($('<ul></ul>'));
+					$("#most-active-" + name).empty();
 					$.each(data[i]['values'], function(index, item){
-						$("#most-active-" + name + " ul").append($('<li class="ellipsis"></li>').append('('+ item['count'] +') ' + item[name+"-name"]));
+						if (index > 4) {
+							return;
+						}
+						$("#most-active-" + name).append($('<div class="list list-item '+name+'"></div>').append(item['count'] +' - ' + item[name+"-name"]));
 					});
 				}
 			},

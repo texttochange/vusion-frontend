@@ -108,6 +108,9 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $timeframe = 'week';
         $time = $this->ProgramSetting->getProgramTimeNow(); 
         if (isset($this->params['query']['by'])) {
+            if ($this->params['query']['by'] == 'program-start') {
+                return null;
+            } 
             $timeframe = $this->params['query']['by'];
         }
         $time->modify("-1 $timeframe");

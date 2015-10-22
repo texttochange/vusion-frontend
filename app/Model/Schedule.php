@@ -282,10 +282,10 @@ class Schedule extends ProgramSpecificMongoModel
             'deadline-schedule');
         $results = array(
             array( 
-                'key' => 'messages',
+                'key' => __('messages'),
                 'values' => $this->_aggregateSummary($until, $messageTypes)),
             array( 
-                'key' => 'actions',
+                'key' => __('actions'),
                 'values' => $this->_aggregateSummary($until, $actionTypes)));
         return $results;
     }

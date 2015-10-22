@@ -1778,6 +1778,10 @@
     width: 16em;
 }
 
+.dashboard {
+    font: normal 13px helvetica;
+}
+
 .dashboard h4 {
     color: #2c6877;
 }
@@ -1788,6 +1792,7 @@
 
 .dashboard .graph-cell {
     text-align: left;
+    width: 50%;
 }
 
 .dashboard .graph {
@@ -1802,9 +1807,7 @@
 }
 
 .dashboard .caption {
-    font: normal 13px helvetica;
     text-align: right;
-    padding-right: 32px;
 }
 
 .nvd3 .nv-axis .nv-axisMaxMin text {
@@ -1815,12 +1818,23 @@
     padding-left: 10px;
 }
 
-.most-active ul{
-    padding-left: 20px;
-}
-
-.most-active li.ellipsis {
+.most-actives .list {
     white-space: nowrap;
     overflow: hidden;
-    width: 100px;
+}
+
+.most-actives .list-header {
+    /*border: solid 1px gray;*/
+}
+
+.most-actives .list-item {
+    padding:2px;
+}
+
+.most-actives .list-item.dialogue {
+    background-color: #B8CC74;
+}
+
+.most-actives .list-item.request {
+    background-color: #83B96A;
 }
