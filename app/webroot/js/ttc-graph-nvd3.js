@@ -152,7 +152,8 @@
             chart.yAxis
                 .tickFormat(function(d) {
                     return d3.format('d')(d);
-                });
+                })
+                .ticks(3);
 
             var yMax = getYMax(data);
             chart

@@ -76,9 +76,9 @@
                         <div style='padding:9px 0px 0px 30px'>
                         <div class='table' style='width:100%'>
                             <div id='most-active' class='row' >
-                                <div class='cell title list-header' style='width:47%'><?php echo __('Dialogues'); ?>:</div>
+                                <div class='cell title list-header' style='width:47%'><?php echo __('Dialogues'); ?></div>
                                 <div class='cell' style='width:5%;min-width:2px'></div>
-                                <div class='cell title list-header' style='width:47%'><?php echo __('Requests'); ?>:</div>        
+                                <div class='cell title list-header' style='width:47%'><?php echo __('Requests'); ?></div>        
                             </div>
                             <div class='row'>
                                 <div class='cell'>

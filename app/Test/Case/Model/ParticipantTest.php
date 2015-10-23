@@ -1983,9 +1983,9 @@ class ParticipantTestCase extends CakeTestCase
 
         $results = $this->Participant->aggregateCountPerDay();
         $this->assertEquals(
-            $results,
+            $results[0],
             array(
-                'key' => 'participant',
+                'key' => 'opt-in',
                 'values' => array(
                     array(
                         'x' => substr($pastThreeDay, 0, 10),
@@ -1999,6 +1999,23 @@ class ParticipantTestCase extends CakeTestCase
                     array(
                         'x' => substr($now, 0, 10),
                         'y' => 2))));
+        $this->assertEquals(
+            $results[1],
+            array(
+                'key' => 'opt-out',
+                'values' => array(
+                    array(
+                        'x' => substr($pastThreeDay, 0, 10),
+                        'y' => 0),
+                    array(
+                        'x' => substr($pastTwoDay, 0, 10),
+                        'y' => 0),
+                    array(
+                        'x' => substr($pastOneDay, 0, 10),
+                        'y' => 1),
+                    array(
+                        'x' => substr($now, 0, 10),
+                        'y' => 1))));
     }
     
 }

@@ -518,14 +518,21 @@ class Participant extends ProgramSpecificMongoModel
 
     public function aggregateCountPerDay($conditions = array(), $timeout = 30000)
     {
-        $results = array();
+        $aggregates = array(
+            array(
+                'key' => 'opt-in',
+                'values' => array()),
+            array(
+                'key' => 'opt-out',
+                'values' => array()));
         $map = new MongoCode('function() {
             var optinDate = new Date(Date.parse(this["last-optin-date"].substring(0,10)));
             var endPeriode;
+            var today = new Date(Date.now());
             if (this["last-optout-date"] != null) {
-                endPeriode = new Date(this["last-optout-date"]);
+                endPeriode = new Date(this["last-optout-date"].substring(0,10));
             } else {
-                endPeriode = new Date(Date.now());
+                endPeriode = today;
             }
 
             function dateFormat(d) {
@@ -537,11 +544,28 @@ class Participant extends ProgramSpecificMongoModel
         
             for (var d = optinDate; d <= endPeriode; d.setDate(d.getDate() + 1)) {
                 current = dateFormat(d);
-                emit(current, 1); 
+                emit(current, true); 
+            }
+            endPeriode.setDate(endPeriode.getDate() + 1);
+            if (today == endPeriode) {
+                return;
+            }
+            for (var d = endPeriode; d <= today; d.setDate(d.getDate() + 1)) {
+                current = dateFormat(d);
+                emit(current, false);   
             }
         }');
         $reduce = new MongoCode("function(k, vals) { 
-            return vals.length; 
+            var numOfTrue = 0;
+            var numOfFalse = 0;
+            for(var i=0; i < vals.length; i++){
+                if (vals[i] === true) {
+                    numOfTrue++;
+                } else {
+                    numOfFalse++;
+                }
+            }
+            return {'opt-in': numOfTrue, 'opt-out': numOfFalse}; 
         }");
         $query = array(
             'mapreduce' => 'participants',
@@ -556,13 +580,14 @@ class Participant extends ProgramSpecificMongoModel
             return $results;
         }
         foreach ($cursor as $result) {
-            $results[] = array(
+            $aggregates[0]['values'][] = array(
                 'x' => $result['_id'],
-                'y' => $result['value']);
+                'y' => $result['value']['opt-in']);
+            $aggregates[1]['values'][] = array(
+                'x' => $result['_id'],
+                'y' => $result['value']['opt-out']);
         }
-        return array(array(
-            'key' => __('opt-in'),
-            'values' => $results));
+        return $aggregates;
     }
 
     
