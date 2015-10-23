@@ -137,7 +137,7 @@
 	            chart.color(options['colors']);
 	        }
             chart.xAxis
-                .tickSize(3)
+                .ticks(3)
                 .tickFormat(function(d) {
                     date = moment(d).format('YYYY-MM-DD');
                     now = moment().startOf('day').format('YYYY-MM-DD');
@@ -211,7 +211,7 @@
         setDefault(options, 'selector', 'week');
         options['graphType'] = 'history';
         options['iconName'] = 'message';
-        options['colors'] = ["#5E6195","#D6CD7A"];
+        options['colors'] = ['#5E6195', '#D6CD7A'];
 
         getData4Graph(url, options);
     }
@@ -222,7 +222,7 @@
         setDefault(options, 'selector', 'week');
         options['graphType'] = 'schedule';
         options['iconName'] = 'schedule';
-        options['colors'] = ["#FEB6B6","#8D2626"];
+        options['colors'] = ['#FF8101','#FFB701'];
 
         getData4Graph(url, options);
     }
@@ -233,6 +233,7 @@
         setDefault(options, 'selector', 'week')
         options['graphType'] = 'participant';
         options['iconName'] = 'participant';
+        options['colors'] = ['#539279','#C16E86'];
 
         getData4Graph(url, options);
     }

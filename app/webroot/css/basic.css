@@ -1780,6 +1780,7 @@
 
 .dashboard {
     font: normal 13px helvetica;
+    fill: #555;
 }
 
 .dashboard h4 {
@@ -1814,6 +1815,10 @@
     font-weight: normal !important;
 }
 
+.nvd3 .nv-axis path.domain {
+    stroke-opacity: 0.5 !important;
+}
+
 .most-active .title {
     padding-left: 10px;
 }
@@ -1829,6 +1834,7 @@
 
 .most-actives .list-item {
     padding:2px;
+    margin-bottom: 1px;
 }
 
 .most-actives .list-item.dialogue {
