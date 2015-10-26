@@ -64,13 +64,13 @@
                 <div class='cell graph-cell'>
                     <div class='most-actives'>
                         <div class='caption'> 
-                            <span><?php echo __('View most active receivers over past') ?></span>
+                            <span><?php echo __('View most receiving Dialogues and Request ') ?></span>
                             <select id="most-active-selector">
                               <option value="day"><?php echo __('over past day'); ?></option>
                               <option value="week"><?php echo __('over past week'); ?></option>
                               <option value="month"><?php echo __('over past month'); ?></option>
                               <option value="year"><?php echo __('over past year'); ?></option>
-                              <option value="program-start"><?php echo __('since program started'); ?></option>
+                              <option value="program-start"><?php echo __('since the program started'); ?></option>
                             </select>
                         </div>
                         <div style='padding:9px 0px 0px 30px'>
