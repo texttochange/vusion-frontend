@@ -12,7 +12,7 @@
         
         function pullBackendNotifications(el, url) {
             var numberOfConsecutiveErrors = 0,
-            normalRefreshRate = 200, 
+            normalRefreshRate = 10000, 
             currentRefreshRate = normalRefreshRate;
             
             function processError(jqXHR, textStatus, errorThrown) {
@@ -46,7 +46,9 @@
             }
             
             function displayAjaxLoader(el) {
-                el.prepend('<div class="ttc-help-box"><img src="/img/ajax-loader.gif" class="simulator-image-load"></div>');            
+                if ($('#ajaxLoader').length == 0) {
+                    el.prepend('<div class="ttc-help-box" id="ajaxLoader"><img src="/img/ajax-loader.gif" class="simulator-image-load"></div>');
+                }
             }
             
             el.update = function() {
