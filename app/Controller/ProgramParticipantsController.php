@@ -275,7 +275,10 @@ class ProgramParticipantsController extends BaseProgramSpecificController
             false);
         
         if (isset($this->params['named']['sort']) &&  isset($this->params['named']['direction'])) {
-            $order = array($this->params['named']['sort'] => $this->params['named']['direction']);
+            //Sorting on the fields which are not index can create buffer error when there are result of more than 33554432 bytes
+            //as the ui by default sort on last-optin-date which has no index, the error is triggered 
+            //quick solution is to not sort on export participant until we find a more long term solution
+            //$order = array($this->params['named']['sort'] => $this->params['named']['direction']);
         } 
         
         $filePath = Program::ensureProgramDir($programUrl);
