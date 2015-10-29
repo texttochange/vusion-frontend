@@ -46,8 +46,8 @@
             }
             
             function displayAjaxLoader(el) {
-                if ($('#ajaxLoader').length == 0) {
-                    el.prepend('<div class="ttc-help-box" id="ajaxLoader"><img src="/img/ajax-loader.gif" class="simulator-image-load"></div>');
+                if ($('#error-image-loader').length == 0) {
+                    el.prepend('<div class="ttc-ajax-loader-box" id="error-image-loader"><img src="/img/ajax-loader.gif" class="simulator-image-load"></div>');
                 }
             }
             

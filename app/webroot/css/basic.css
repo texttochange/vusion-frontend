@@ -341,16 +341,16 @@
         height: 16px;
 }
 
-.ttc-help-box {
+.ttc-ajax-loader-box {
         background: #EDEDED;
 }
 
-.ttc-help-box ul {
+.ttc-ajax-loader-box ul {
     list-style-position: inside;
     list-style-type: none;
 }
 
-.ttc-help-box li{
+.ttc-ajax-loader-box li{
     white-space: normal;
     margin-bottom: 0px;
     margin: 0 12px;
