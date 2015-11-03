@@ -50,7 +50,7 @@ function requestHelp(elt, baseUrl, topic) {
         $(elt).parent().next().remove();
         return;
     }
-    $("<div class='ttc-ajax-loader-box ttc-help-box'><img src='/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent())
+    $("<div class='ttc-ajax-loader-box' id='ttc-help-box'><img src='/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent())
     $.ajax({
         url: '/documentation.json', 
         type: 'GET',
