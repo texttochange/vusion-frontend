@@ -46,11 +46,11 @@ function addFormHelp(baseUrl, name, selector) {
 
 
 function requestHelp(elt, baseUrl, topic) {
-    if ($($(elt).parent().next()).attr('class') == 'ttc-ajax-loader-box') {
+    if ($($(elt).parent().next()).hasClass('ttc-ajax-loader-box')) {
         $(elt).parent().next().remove();
         return;
     }
-    $("<div class='ttc-ajax-loader-box' id='ttc-help-box'><img src='/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent())
+    $("<div class='ttc-ajax-loader-box ttc-help-box'><img src='/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent())
     $.ajax({
         url: '/documentation.json', 
         type: 'GET',
