@@ -609,6 +609,7 @@ function loadProgramStats(){
                 type: "GET",
                 contentType: 'application/json; charset=utf-8',
                 url: "/"+programUrl+"/programAjax/getStats.json",
+                data: {'stats_type': 'summary'}, 
                 success: function(data){
                     renderStats(data['program-url'], data['program-stats'])
                 },

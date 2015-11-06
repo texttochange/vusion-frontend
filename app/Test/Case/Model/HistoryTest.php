@@ -603,59 +603,6 @@ class HistoryTestCase extends CakeTestCase
         $output = $this->History->getParticipantLabels($histories);
         $this->assertEquals('email', $output[0]['History']['participant-labels'][0]['label']);
     }
-    
-    
-    public function testAggregate()
-    {
-        $history = array(
-            'object-type' => 'dialogue-history',
-            'participant-phone' => '+788601461',
-            'timestamp' => '2012-03-06T11:06:34',
-            'message-content' => 'FEEL nothing',
-            'message-direction' => 'incoming',
-            'interaction-id'=>'script.dialogues[0].interactions[0]',
-            'dialogue-id'=>'script.dialogues[0]'
-            );
-        $this->History->create($history);
-        $this->History->save($history);
-
-        $history = array(
-            'object-type' => 'dialogue-history',
-            'participant-phone' => '+788601461',
-            'timestamp' => '2012-03-06T11:06:34',
-            'message-content' => 'FEEL nothing',
-            'message-direction' => 'incoming',
-            'interaction-id'=>'script.dialogues[0].interactions[0]',
-            'dialogue-id'=>'script.dialogues[0]'
-            );
-        $this->History->create($history);
-        $this->History->save($history);
-
-        $history = array(
-            'object-type' => 'dialogue-history',
-            'participant-phone' => '+78866788',
-            'timestamp' => '2012-03-07T11:07:34',
-            'message-content' => 'FEEL nothing',
-            'message-direction' => 'incoming',
-            'interaction-id'=>'script.dialogues[0].interactions[0]',
-            'dialogue-id'=>'script.dialogues[0]'
-            );
-        $this->History->create($history);
-        $this->History->save($history);
-
-        $histories = $this->History->aggregateNvd3("2011-01-01T00:00:00", 'date', 'value');
-
-        $this->assertEquals(
-            $histories,
-            array(
-                array(
-                    'date' => '2012-03-06',
-                    'value' => 2),
-                array(
-                    'date' => '2012-03-07',
-                    'value' => 1))
-            );
-    }
 
 
     public function testGetMostActive()

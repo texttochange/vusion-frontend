@@ -35,7 +35,7 @@ class StatsComponent extends Component
             'Total(today) schedule(s)' => __('Total(today) schedule(s)'),            
             'Stats Not Available' => __('Stats Not Available'),
             );
-        $this->Controller = $collection->getController();
+        //$this->Controller = $collection->getController();
         parent::__construct($collection, $settings);
     }
     
@@ -94,19 +94,19 @@ class StatsComponent extends Component
             'object-type' => 'program-stats',
             'model-version'=> '1');
         
-        $tempProgramSetting = ProgramSpecificMongoModel::init('ProgramSetting', $database, true);
+        $tempProgramSetting = ProgramSpecificMongoModel::init('ProgramSetting', $database);
         $programTimeNow = $tempProgramSetting->getProgramTimeNow();            
         if(empty($programTimeNow)){
             return $programStats;
         }
-        $tempParticipant = ProgramSpecificMongoModel::init('Participant', $database, true);
+        $tempParticipant = ProgramSpecificMongoModel::init('Participant', $database);
         $programStats['active-participant-count'] = $this->getProgramStat(
             $tempParticipant,
             array('session-id' => array('$ne' => null)));
         
         $programStats['participant-count'] = $this->getProgramStat($tempParticipant);
         
-        $tempSchedule = ProgramSpecificMongoModel::init('Schedule', $database, true);
+        $tempSchedule = ProgramSpecificMongoModel::init('Schedule', $database);
         $programTimeToday = $programTimeNow->modify('+1 day');        
         $programStats['today-schedule-count'] = $this->getProgramStat(
             $tempSchedule, 
@@ -114,7 +114,7 @@ class StatsComponent extends Component
         
         $programStats['schedule-count'] = $this->getProgramStat($tempSchedule);
         
-        $tempHistory = ProgramSpecificMongoModel::init('History', $database, true);
+        $tempHistory = ProgramSpecificMongoModel::init('History', $database);
         $programTimeForMonth = $programTimeNow->format("Y-m-d\TH:i:s");        
         $first_second = date('Y-m-01\TH:i:s', strtotime($programTimeForMonth));
         $last_second = date('Y-m-t\TH:i:s', strtotime($programTimeForMonth));
@@ -205,6 +205,83 @@ class StatsComponent extends Component
         return end($this->cacheStatsExpire);
     }
     
-    
+    public function _getTimeframeCondition($database, $past=true) 
+    {
+        $tmpProgramSetting = ProgramSpecificMongoModel::init('ProgramSetting', $database, true);
+        $time = $tmpProgramSetting->getProgramTimeNow(); 
+        $timeframe = 'week';
+        if (isset($this->Controller->params['url']['for'])) {
+            $timeframe = $this->Controller->params['url']['for'];
+            if ($timeframe == 'ever') {
+                return array();
+            }
+            if (in_array($timeframe, array('week', 'month', 'year'))) {
+                $timeframe = $this->Controller->params['url']['for'];
+            }
+        }
+        if ($past) {
+            return $time->modify("-1 $timeframe")->format("Y-m-d");
+        } 
+        return $time->modify("+1 $timeframe")->format("Y-m-d");
+    }
+
+    public function getStatsType()
+    {
+        if (isset($this->Controller->params['url']['stats_type'])) {
+            $statsType = $this->Controller->params['url']['stats_type'];
+            if (in_array($statsType, array('participants', 'history', 'schedules', 'top_dialogues_requests', 'summary'))) {
+                return $statsType;
+            }
+        }   
+        return null;
+    }
+
+    public function getStats($database, $statsType)
+    {
+        switch ($statsType) {
+            case 'summary': 
+                $stats = $this->getProgramStats($database);
+                break;
+            case 'participants':
+                $date = $this->_getTimeframeCondition($database);
+                $tmpParticipantStats = ProgramSpecificMongoModel::init('ParticipantStats', $database);
+                $stats = $tmpParticipantStats->find(
+                    'all', array('conditions' => array('_id' => array('$gte' => $date))));
+                break;
+            case 'history':
+                $date = $this->_getTimeframeCondition($database);
+                $tmpHistoryStats = ProgramSpecificMongoModel::init('HistoryStats', $database);
+                $stats = $tmpHistoryStats->find(
+                    'all', array('conditions' => array('_id' => array('$gte' => $date))));
+                break;
+            case 'schedules':
+                $date = $this->_getTimeframeCondition($database, false);
+                $tmpSchedule = ProgramSpecificMongoModel::init('Schedule', $database);
+                $stats = $tmpSchedule->aggregateStats($date);
+                break;
+            case 'top_dialogues_requests':
+                $date = $this->_getTimeframeCondition($database);
+                $tmpHistory = ProgramSpecificMongoModel::init('History', $database);
+                $tmpDialogue = ProgramSpecificMongoModel::init('Dialogue', $database);
+                $tmpRequest = ProgramSpecificMongoModel::init('Request', $database);
+                $dialogueActivities = $tmpHistory->getMostActive($date, 'dialogue-id', 'dialogue-id', 'count');
+                $dialogueActivities = $tmpDialogue->fromDialogueIdsToNames($dialogueActivities);
+                $requestActivities = $tmpHistory->getMostActive($date, 'request-id', 'request-id', 'count');
+                $requestActivities = $tmpRequest->fromRequestIdsToKeywords($requestActivities);
+                $stats = array(
+                    array(
+                        'key' => 'dialogue',
+                        'values' => $dialogueActivities),
+                    array(
+                        'key' => 'request',
+                        'values' => $requestActivities));
+                break;
+            default:
+                $stats = array();
+        }
+        return $stats;
+    }
+
+
 }
-?>
+

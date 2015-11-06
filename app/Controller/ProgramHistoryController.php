@@ -93,6 +93,7 @@ class ProgramHistoryController extends BaseProgramSpecificController
         }
     }
 
+    /*
     public function aggregate()
     {
         $requestSuccess = true;
@@ -117,6 +118,7 @@ class ProgramHistoryController extends BaseProgramSpecificController
         return DialogueHelper::fromPhpDateToVusionDate($time);
     }
 
+    
     public function mostActive() 
     {
         $requestSuccess = true;
@@ -133,7 +135,7 @@ class ProgramHistoryController extends BaseProgramSpecificController
     }
 
 
-    public function aggregateNvd3()
+    public function getStats()
     {
         $requestSuccess = true;
         $time = $this->ProgramSetting->getProgramTimeNow(); 
@@ -145,7 +147,7 @@ class ProgramHistoryController extends BaseProgramSpecificController
         $histories = $this->History->aggregateNvd3(DialogueHelper::fromPhpDateToVusionDate($time));
         $this->set(compact('histories', 'requestSuccess'));
         $this->render('index');
-    }
+    }*/
 
     public function listHistory()
     {

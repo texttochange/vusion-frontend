@@ -12,7 +12,7 @@ App::uses('VumiRabbitMQ', 'Lib');
 class ProgramHomeController extends BaseProgramSpecificController
 {
     var $uses = array(
-        'Participant',
+        'ParticipantStats',
         'History',
         'Schedule',
         'Dialogue',
@@ -51,36 +51,9 @@ class ProgramHomeController extends BaseProgramSpecificController
     
     public function index()
     {
-        
-        $isParticipantAdd = $this->Acl->check(array(
-            'User' => array(
-                'id' => $this->Session->read('Auth.User.id')
-                ),
-            ), 'controllers/ProgramParticipants/add');
-        $participantCount = $this->Participant->find('count');
-        $statusCount      = $this->History->find('count');
-        
-        $activeInteractions = $this->Dialogue->getActiveInteractions();
-        
-        $timeNow = $this->ProgramSetting->getProgramTimeNow(); 
-        
-        if (isset($timeNow)) 
-            $timeNow->modify('+1 day');
-        $schedules = $this->Schedule->generateSchedule(
-            $this->Schedule->summary($timeNow),
-            $activeInteractions
-            );
-        $this->set(compact(
-            'hasScriptActive', 
-            'hasScriptDraft',
-            'isScriptEdit', 
-            'isParticipantAdd', 
-            'participantCount',
-            'statusCount',
-            'schedules',
-            'workerStatus'));
     }
 
+    /*
     public function aggregate()
     {
         $requestSuccess = true;
@@ -97,7 +70,7 @@ class ProgramHomeController extends BaseProgramSpecificController
         $schedules = $this->Schedule->aggregateNvd3(DialogueHelper::fromPhpDateToVusionDate($time));
         $this->set(compact('schedules', 'requestSuccess'));
         $this->render('aggregate');
-    }
+    }*/
     
     
     public function restartWorker()

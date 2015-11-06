@@ -169,7 +169,7 @@ class ScheduleTestCase extends CakeTestCase
             $this->Schedule->save($schedule);
         }
         
-        $results = $this->Schedule->aggregateNvd3("2013-04-14T00:00:00");
+        $results = $this->Schedule->aggregateStats("2013-04-14T00:00:00");
         $this->assertEquals(
             $results, 
             array(

@@ -194,11 +194,15 @@
 	
 
 	function getData4Graph(url, options) {
+        data = {'stats_type': options['statsType']}
+        if ('selector' in options) {
+            data['for'] =  options['selector'];
+        }
         $.ajax({
             url: url,
-            data: (('selector' in options)? {'by': options['selector']}: null),
+            data: data,
             type:'GET',
-            contentType: 'application/json; charset=utf-8',
+            contentType: 'application/json;charset=utf-8',
             dataType: 'json',
             success: function(response) {
                 data = response['data'];
@@ -208,44 +212,51 @@
     }
 
     function HistoryGraph(options) {
-        var url = "/" + options['program'] + "/ProgramHistory/aggregateNvd3.json";
+        var url = "/" + options['program'] + "/ProgramAjax/getStats.json";
         setDefault(options, 'selector', 'week');
         options['graphType'] = 'history';
         options['iconName'] = 'message';
         options['colors'] = ['#5E6195', '#D6CD7A'];
+        options['statsType'] = 'history';
 
         getData4Graph(url, options);
     }
 
     //TODO DRY ajax and timeout and error
     function ScheduleGraph(options) {
-        var url = "/" + options['program']+ "/ProgramHome/aggregateNvd3.json";
+        var url = "/" + options['program']+ "/ProgramAjax/getStats.json";
         setDefault(options, 'selector', 'week');
         options['graphType'] = 'schedule';
         options['iconName'] = 'schedule';
         options['colors'] = ['#FF8101','#FFB701'];
+        options['statsType'] = 'schedules';
 
         getData4Graph(url, options);
     }
 
 
     function ParticipantGraph(options) {
-        var url = "/" + options['program']+"/ProgramParticipants/aggregateNvd3.json";
+        var url = "/" + options['program']+"/ProgramAjax/getStats.json";
         setDefault(options, 'selector', 'week')
         options['graphType'] = 'participant';
         options['iconName'] = 'participant';
         options['colors'] = ['#539279','#C16E86'];
+        options['statsType'] = 'participants';
 
         getData4Graph(url, options);
     }
 
 
     function BuildMostActiveLists(options) {
-    	var url = "/" + options['program']+"/ProgramHistory/mostActive.json";
+    	var url = "/" + options['program']+"/ProgramAjax/getStats.json";
     	options['graphType'] = 'most-active';
+        data = {'stats_type': 'top_dialogues_requests'}
+        if ('selector' in options) {
+            data['for'] = options['selector'];
+        }
 		$.ajax({
 			url: url,
-			data: (('selector' in options)? {'by': options['selector']}: null),
+			data: data,
 			dataType: 'json',
 			success: function(response) {
 				var data = response['data'];
@@ -260,8 +271,6 @@
 					});
 				}
 			},
-			timeout: 10000,
-			error: vusionAjaxError
 		});
     }
 

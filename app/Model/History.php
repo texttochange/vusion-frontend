@@ -256,6 +256,7 @@ class History extends ProgramSpecificMongoModel
         return $histories;
     }
     
+    /*
     public function _aggregate($since, $x, $y) 
     {
         $aggregates = array();
@@ -308,7 +309,7 @@ class History extends ProgramSpecificMongoModel
                 'key'=> __('sent'),
                 'values' => $outgoing));
     }
-    
+    */
 
     public function getMostActive($since, $id, $x, $y)
     {

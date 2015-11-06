@@ -217,6 +217,7 @@ class Schedule extends ProgramSpecificMongoModel
         
     }
     
+    /*
     public function aggregate() 
     {
         $aggregates = array();
@@ -240,7 +241,7 @@ class Schedule extends ProgramSpecificMongoModel
             $aggregates[] = $aggregate;
         }
         return $aggregates;
-    }
+    }*/
 
     public function _aggregateSummary($until, $types) 
     {
@@ -270,7 +271,7 @@ class Schedule extends ProgramSpecificMongoModel
         return $aggregates;
     }
 
-    public function aggregateNvd3($until) 
+    public function aggregateStats($until) 
     {
         $messageTypes = array(
             'dialogue-schedule',

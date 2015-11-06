@@ -1,5 +1,9 @@
 <?php
 App::uses('MongoModel', 'Model');
+App::uses('ParticipantStats', 'Model');
+App::uses('HistoryStats', 'Model');
+App::uses('Participant', 'Model');
+App::uses('History', 'Model');
 
 
 abstract class ProgramSpecificMongoModel extends MongoModel
