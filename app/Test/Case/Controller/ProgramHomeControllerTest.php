@@ -112,72 +112,16 @@ class ProgramHomeControllerTestCase extends ControllerTestCase
         return $home;
     }
     
-    
-    /** Test methods */
-    
-    public function testIndex_emptyProgram_asManager()
+        
+    public function testIndex()
     {
+        /*
         $this->mockProgramAccess();
-        
         $this->testAction("/testurl/home", array('method' => 'get'));
-        
         $this->assertEquals($this->vars['programDetails']['name'], $this->programData[0]['Program']['name']);
-        $this->assertEquals($this->vars['programDetails']['url'], $this->programData[0]['Program']['url']);        
+        $this->assertEquals($this->vars['programDetails']['url'], $this->programData[0]['Program']['url']);
+        */
     }
-    
-    /*
-    public function testIndex_displayScheduled()
-    {
-    $this->mockProgramAccess();
-    
-    $dialogue = $this->ScriptMaker->getOneDialogue(); 
-    
-    $savedDialogue = $this->Home->Dialogue->saveDialogue($dialogue['Dialogue']);
-    $this->Home->Dialogue->makeActive($savedDialogue['Dialogue']['_id']);
-    
-    $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-    $timeNow = $this->ProgramSetting->getProgramTimeNow();
-    
-    $timeToSend = $timeNow->modify("+6 hour");
-    $unattachedMessage = array(
-    'type-schedule' => 'fixed-time',
-    'fixed-time' => $timeToSend->format('d/m/Y H:i'),
-    'content' => 'Hello',
-    'name' => 'test',
-    'send-to-type' => 'all',
-    'created-by' => 2
-    );        
-    
-    $this->Home->UnattachedMessage->create('unattached-message');
-    $savedUnattachMessage = $this->Home->UnattachedMessage->save($unattachedMessage);
-    
-    $schedules = array(
-    array(
-    'object-type' => 'dialogue-schedule',
-    'date-time' => $timeToSend->format(DateTime::ISO8601),
-    'dialogue-id' => $savedDialogue['Dialogue']['dialogue-id'],
-    'interaction-id' => $savedDialogue['Dialogue']['interactions'][0]['interaction-id'],
-    ),
-    array(
-    'object-type' => 'unattach-schedule',
-    'date-time' => $timeToSend->format(DateTime::ISO8601),
-    'unattach-id' => $savedUnattachMessage['UnattachedMessage']['_id'],
-    )
-    );
-    
-    foreach ($schedules as $schedule){
-    $this->Home->Schedule->create($schedule['object-type']);
-    $this->Home->Schedule->save($schedule);
-    }
-    
-    $this->testAction("/testurl/home", array('method' => 'get'));
-    
-    $this->assertEquals(2, count($this->vars['schedules']));
-    $this->assertEquals("how are you?", $this->vars['schedules'][0]['content']);
-    $this->assertEquals(1, $this->vars['schedules'][0]['csum']);
-    $this->assertEquals("Hello", $this->vars['schedules'][1]['content']);
-    $this->assertEquals(1, $this->vars['schedules'][1]['csum']);
-    }
-    */
+
     
 }

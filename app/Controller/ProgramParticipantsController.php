@@ -1041,30 +1041,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     {
         $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
     }
-    /*
-    public function _getTimeframeCondition() 
-    {
-        $time = $this->ProgramSetting->getProgramTimeNow(); 
-        $timeframe = 'week';
-        if (isset($this->params['query']['for'])) {
-            if ($timeframe == 'ever') {
-                return array();
-            }
-            if (in_array($timeframe, array('week', 'month', 'year'))) {
-                $timeframe = $this->params['query']['for'];
-            }
-        }
-        return $time->modify("-1 $timeframe")->format("Y-m-d");
-    }
 
-    public function getStats()
-    {
-        $requestSuccess = true;
-        $date = $this->_getTimeframeCondition();
-        $participantStats = $this->ParticipantStats->find(
-            'all', array('conditions' => array('_id' => array('$gte' => $date))));
-        $this->set(compact('participantStats', 'requestSuccess'));
-        $this->render('stats_nvd3');
-    }
-    */
+
 }
