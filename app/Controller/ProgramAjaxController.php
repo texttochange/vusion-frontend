@@ -58,4 +58,5 @@ class ProgramAjaxController extends BaseProgramSpecificController
         $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
         $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);         
     }
+
 }

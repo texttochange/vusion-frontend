@@ -1,5 +1,6 @@
 <?php
 App::uses('BaseProgramSpecificController','Controller');
+App::uses('VumiRabbitMQ', 'Lib');
 
 
 class ProgramHomeController extends BaseProgramSpecificController
@@ -37,7 +38,15 @@ class ProgramHomeController extends BaseProgramSpecificController
 
     public function index()
     {
+        $this->_updateStats();
     }
     
+
+    protected function _updateStats()
+    {
+        $databaseName = $this->programDetails['database'];
+        $this->VumiRabbitMQ = new VumiRabbitMQ(Configure::read('vusion.rabbitmq'));
+        $this->VumiRabbitMQ->sendMessageToUpdateStats($databaseName);
+    }
     
 }
