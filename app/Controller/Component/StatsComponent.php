@@ -213,7 +213,7 @@ class StatsComponent extends Component
         if (isset($this->Controller->params['url']['for'])) {
             $timeframe = $this->Controller->params['url']['for'];
             if ($timeframe == 'ever') {
-                return array();
+                return null;
             }
             if (in_array($timeframe, array('week', 'month', 'year'))) {
                 $timeframe = $this->Controller->params['url']['for'];
@@ -244,15 +244,21 @@ class StatsComponent extends Component
                 break;
             case 'participants':
                 $date = $this->_getTimeframeCondition($database);
+                $conditions = array();
+                if ($date != null) {
+                    $conditions = array('conditions' => array('_id' => array('$gte' => $date)));
+                }
                 $tmpParticipantStats = ProgramSpecificMongoModel::init('ParticipantStats', $database);
-                $stats = $tmpParticipantStats->find(
-                    'all', array('conditions' => array('_id' => array('$gte' => $date))));
+                $stats = $tmpParticipantStats->find('all', $conditions);
                 break;
             case 'history':
                 $date = $this->_getTimeframeCondition($database);
+                $conditions = array();
+                if ($date != null) {
+                    $conditions = array('conditions' => array('_id' => array('$gte' => $date)));
+                }
                 $tmpHistoryStats = ProgramSpecificMongoModel::init('HistoryStats', $database);
-                $stats = $tmpHistoryStats->find(
-                    'all', array('conditions' => array('_id' => array('$gte' => $date))));
+                $stats = $tmpHistoryStats->find('all', $conditions);
                 break;
             case 'schedules':
                 $date = $this->_getTimeframeCondition($database, false);

@@ -10,11 +10,12 @@
                 <div class='cell graph-cell'>
                     <div class='caption' style='padding-right:10px'> 
                        <img src='/img/message-icon-20.png' style='height:10px'/>
-                        <span><?php echo __('View messages over past') ?></span>
+                        <span><?php echo __('View messages') ?></span>
                         <select id="history-brief-selector">
-                          <option value="week">week</option>
-                          <option value="month">month</option>
-                          <option value="year">year</option>
+                          <option value="week"><?php echo __("over the past week"); ?></option>
+                          <option value="month"><?php echo __("over the past month"); ?></option>
+                          <option value="year"><?php echo __("over the past year"); ?></option>
+                          <option value="ever"><?php echo __("since the begining"); ?></option>
                         </select>
                     </div>
                     <div id="history-brief" class="graph">
@@ -27,11 +28,10 @@
                 <div class='cell graph-cell'>
                     <div class='caption'> 
                         <img src='/img/schedule-icon-14.png'/>
-                        <span><?php echo __('View schedule item(s) over next'); ?></span>
+                        <span><?php echo __('View scheduled item(s) over next'); ?></span>
                         <select id="schedule-brief-selector">
-                          <option value="day">day</option>
-                          <option selected value="week">week</option>
-                          <option value="month">month</option>
+                          <option selected value="week"><?php echo __("week"); ?></option>
+                          <option value="month"><?php echo __("month"); ?></option>
                         </select>
                     </div>
                     <div id="schedule-brief" class='graph' style=''/>
@@ -47,11 +47,12 @@
                 <div class='cell graph-cell'>
                     <div class='caption' style='padding-right:10px'> 
                         <img src='/img/participant-icon-14.png' style='padding-left:3px'/>
-                        <span><?php echo __('View participant(s) over past') ?></span>
+                        <span><?php echo __('View participant(s)') ?></span>
                         <select id="participant-brief-selector">
-                          <option value="week">week</option>
-                          <option value="month">month</option>
-                          <option value="year">year</option>
+                          <option value="week"><?php echo __("over the past week"); ?></option>
+                          <option value="month"><?php echo __("over the past month"); ?></option>
+                          <option value="year"><?php echo __("over the past year"); ?></option>
+                          <option value="ever"><?php echo __("since the begining"); ?></option>
                         </select>
                     </div>
                     <div id="participant-brief" class='graph'>
@@ -69,8 +70,6 @@
                               <option value="day"><?php echo __('over past day'); ?></option>
                               <option value="week"><?php echo __('over past week'); ?></option>
                               <option value="month"><?php echo __('over past month'); ?></option>
-                              <option value="year"><?php echo __('over past year'); ?></option>
-                              <option value="program-start"><?php echo __('since the program started'); ?></option>
                             </select>
                         </div>
                         <div style='padding:9px 0px 0px 30px'>
