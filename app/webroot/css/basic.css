@@ -536,9 +536,7 @@
 }
 
 .ttc-program-index {
-        /*float: left;*/
-        padding: 15px 2%;
-        /*width: 60%;*/
+        padding-top: 15px;
         min-width: 737px;
 }
 
@@ -548,11 +546,10 @@
 }
 
 .ttc-recent-issues {
-       /* float: right;*/
-        padding: 15px;
-       /*width: 339px;*/
-       width: 95%;
+    padding-top: 15px;
+    padding-left: 5%;
 }
+
 .ttc-recent-issues h3 {
         border-bottom: solid;
         padding-bottom: 5px;
@@ -1266,9 +1263,7 @@
         }
 
         .ttc-program-index {
-                /*float: left;*/
-                padding: 15px 20px;
-                /*width: 60%;*/
+                padding-top: 15px;
                 min-width: 787px;
         }         
 }
