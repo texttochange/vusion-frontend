@@ -538,7 +538,7 @@
 .ttc-program-index {
         /*float: left;*/
         padding: 15px 2%;
-        width: 60%;
+        /*width: 60%;*/
         min-width: 737px;
 }
 
@@ -549,8 +549,9 @@
 
 .ttc-recent-issues {
        /* float: right;*/
-        padding: 15px 2%;
+        padding: 15px;
        /*width: 339px;*/
+       width: 95%;
 }
 .ttc-recent-issues h3 {
         border-bottom: solid;
@@ -572,13 +573,14 @@
 .ttc-issues-list div.ttc-issue-content {
         margin-right: 15px;
         overflow: hidden;
+        width: 470px;
 }
 
 .ttc-issues-list div.ttc-issue-time {
-        float: right;
+        /*float: right;
         text-align: right;
         /*margin-top: 17px;*/
-        width: 170px;
+        width: 200px;
 }
 
 .ttc-issue-content h3 {

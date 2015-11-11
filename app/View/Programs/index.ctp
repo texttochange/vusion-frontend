@@ -1,5 +1,5 @@
 <div class="table" style="width:100%">
-<div class="cell">
+<div class="cell" style="width:60%">
     <div class="ttc-program-index">
         <?php 
             $this->RequireJs->scripts(array("ttc-utils", "jquery"));
@@ -85,21 +85,23 @@
     </div>
 </div>
 
-<div class="cell" style="width:100%">
-    <div class="ttc-recent-issues">
+<div class="cell" style="width:40%">
+    <div class="table ttc-recent-issues">
         <h3><?php echo __('Recent Issues'); ?></h3>
         <ul class="ttc-issues-list">
         <?php foreach ($unmatchableReplies as $unmatchableReply): ?>
         <li>
         <?php
-            echo "<div class='ttc-issue-time' >";
-            echo $this->Time->format('d/m/y H:i', $unmatchableReply['UnmatchableReply']['timestamp']);
-            echo ' (UTC)';
-            echo "</div>";
-            echo "<div class='ttc-issue-content'>";
+        echo "<div class='row'>";
+            echo "<div class='cell ttc-issue-content'>";
             echo $this->Html->tag('h3', $this->Html->link(__('unmatchable reply'),array('controller'=>'unmatchableReply','action' => 'index')));
             echo $this->Html->tag('p', ($unmatchableReply['UnmatchableReply']['message-content']!=null ? $unmatchableReply['UnmatchableReply']['message-content'] : "<i>message empty</i>"));
             echo "</div>";
+            echo "<div class='cell ttc-issue-time' >";
+            echo $this->Time->format('d/m/y H:i', $unmatchableReply['UnmatchableReply']['timestamp']);
+            echo ' (UTC)';
+            echo "</div>";
+            echo "</div>"; 
         ?>
         </li>
         <?php endforeach; ?>
