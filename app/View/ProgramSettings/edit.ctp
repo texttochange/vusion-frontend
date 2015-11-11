@@ -20,6 +20,12 @@
         $this->Js->get('#button-save')->event('click',
             '$("#ProgramSettingsEditForm").submit()' , true);
 
+        $contentActions[] = $this->Html->link(__('Restart Worker'),
+            array('program'=>$programDetails['url'],
+                'controller' => $controller),
+            array('class' => 'ttc-button',
+                'id' => 'restart-worker-button'));
+        
         $this->Js->get('#restart-worker-button')->event(
             'click',
             $this->Js->request(
