@@ -1,5 +1,5 @@
 <?php
-    $this->RequireJs->scripts(array("ttc-utils"));
+    $this->RequireJs->scripts(array("ttc-utils", "jquery-ui-timepicker"));
     $containsFilter         = (isset($containsFilter) ? $containsFilter : false);
     $containsDataControlNav = (isset($containsDataControlNav) ? $containsDataControlNav : false);
 ?>
@@ -122,10 +122,7 @@
                             'action' => 'getFilterParameterOptions',
                             'ext' => 'json',
                             '?' => $urlParameters));
-                        $this->Js->get('document')->event(
-                            $options['_ajax'],
-                            'loadFilterParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");'
-                            );
+                        $this->RequireJs->runLine('loadFilterParameterOptions("' . $parameter . '", "' . $ajaxUrl . '");');
                         $filterParameterOptions[$parameter] = array("Loading...");
                     }
                 }

@@ -1415,7 +1415,9 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
     public function testExport()
     {
         $participants = $this->mockProgramAccess();
-        $expectedCondition = array('simulate' => false);
+        $expectedCondition = array('$or' => array(
+            array('simulate' => false),
+            array('simulate' => array('$exists' => false))));
         $participants
         ->expects($this->once())
         ->method('_notifyBackendExport')
