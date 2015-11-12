@@ -10,7 +10,7 @@
                 <div class='cell graph-cell'>
                     <div class='caption' style='padding-right:10px'> 
                        <img src='/img/message-icon-20.png' style='height:10px'/>
-                        <span><?php echo __('View messages') ?></span>
+                        <span><?php echo __('Messages') ?></span>
                         <select id="history-brief-selector">
                           <option value="week"><?php echo __("over the past week"); ?></option>
                           <option value="month"><?php echo __("over the past month"); ?></option>
@@ -28,7 +28,7 @@
                 <div class='cell graph-cell'>
                     <div class='caption'> 
                         <img src='/img/schedule-icon-14.png'/>
-                        <span><?php echo __('View scheduled item(s) over next'); ?></span>
+                        <span><?php echo __('Scheduled item(s) over next'); ?></span>
                         <select id="schedule-brief-selector">
                           <option selected value="week"><?php echo __("week"); ?></option>
                           <option value="month"><?php echo __("month"); ?></option>
@@ -47,7 +47,7 @@
                 <div class='cell graph-cell'>
                     <div class='caption' style='padding-right:10px'> 
                         <img src='/img/participant-icon-14.png' style='padding-left:3px'/>
-                        <span><?php echo __('View participant(s)') ?></span>
+                        <span><?php echo __('Participant(s)') ?></span>
                         <select id="participant-brief-selector">
                           <option value="week"><?php echo __("over the past week"); ?></option>
                           <option value="month"><?php echo __("over the past month"); ?></option>
@@ -65,11 +65,11 @@
                 <div class='cell graph-cell'>
                     <div class='most-actives'>
                         <div class='caption'> 
-                            <span><?php echo __('View most receiving Dialogues and Request ') ?></span>
+                            <span><?php echo __('Most received Dialogues and Request over past') ?></span>
                             <select id="most-active-selector">
-                              <option value="day"><?php echo __('over past day'); ?></option>
-                              <option value="week"><?php echo __('over past week'); ?></option>
-                              <option value="month"><?php echo __('over past month'); ?></option>
+                              <option value="day"><?php echo __('day'); ?></option>
+                              <option value="week"><?php echo __('week'); ?></option>
+                              <option value="month"><?php echo __('month'); ?></option>
                             </select>
                         </div>
                         <div style='padding:9px 0px 0px 30px'>
