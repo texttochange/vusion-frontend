@@ -10,7 +10,7 @@
                 <div class='cell graph-cell'>
                     <div class='caption' style='padding-right:10px'> 
                        <img src='/img/message-icon-20.png' style='height:10px'/>
-                        <span><?php echo __('Messages') ?></span>
+                        <span><?php echo __('Message(s)') ?></span>
                         <select id="history-brief-selector">
                           <option value="week"><?php echo __("over the past week"); ?></option>
                           <option value="month"><?php echo __("over the past month"); ?></option>
@@ -28,7 +28,7 @@
                 <div class='cell graph-cell'>
                     <div class='caption'> 
                         <img src='/img/schedule-icon-14.png'/>
-                        <span><?php echo __('Scheduled item(s) over next'); ?></span>
+                        <span><?php echo __('Scheduled item(s) over the next'); ?></span>
                         <select id="schedule-brief-selector">
                           <option selected value="week"><?php echo __("week"); ?></option>
                           <option value="month"><?php echo __("month"); ?></option>
@@ -65,7 +65,7 @@
                 <div class='cell graph-cell'>
                     <div class='most-actives'>
                         <div class='caption'> 
-                            <span><?php echo __('Most received Dialogues and Request over past') ?></span>
+                            <span><?php echo __('Most received over the past') ?></span>
                             <select id="most-active-selector">
                               <option value="day"><?php echo __('day'); ?></option>
                               <option value="week"><?php echo __('week'); ?></option>
@@ -75,9 +75,9 @@
                         <div style='padding:9px 0px 0px 30px'>
                         <div class='table' style='width:100%'>
                             <div id='most-active' class='row' >
-                                <div class='cell title list-header' style='width:47%'><?php echo __('Dialogues'); ?></div>
+                                <div class='cell title list-header' style='width:47%'><?php echo __('Dialogue(s)'); ?></div>
                                 <div class='cell' style='width:5%;min-width:2px'></div>
-                                <div class='cell title list-header' style='width:47%'><?php echo __('Requests'); ?></div>        
+                                <div class='cell title list-header' style='width:47%'><?php echo __('Request(s)'); ?></div>        
                             </div>
                             <div class='row'>
                                 <div class='cell'>
