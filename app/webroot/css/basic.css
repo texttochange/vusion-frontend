@@ -574,10 +574,10 @@
 }
 
 .ttc-issues-list div.ttc-issue-time {
-        /*float: right;
         text-align: right;
         /*margin-top: 17px;*/
-        width: 200px;
+        width: 470px;
+        padding: 0 2px;
 }
 
 .ttc-issue-content h3 {
