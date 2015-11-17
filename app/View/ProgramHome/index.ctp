@@ -15,7 +15,6 @@
                           <option value="week"><?php echo __("over the past week"); ?></option>
                           <option value="month"><?php echo __("over the past month"); ?></option>
                           <option value="year"><?php echo __("over the past year"); ?></option>
-                          <option value="ever"><?php echo __("since the begining"); ?></option>
                         </select>
                     </div>
                     <div id="history-brief" class="graph">
@@ -52,7 +51,6 @@
                           <option value="week"><?php echo __("over the past week"); ?></option>
                           <option value="month"><?php echo __("over the past month"); ?></option>
                           <option value="year"><?php echo __("over the past year"); ?></option>
-                          <option value="ever"><?php echo __("since the begining"); ?></option>
                         </select>
                     </div>
                     <div id="participant-brief" class='graph'>

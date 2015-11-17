@@ -1844,3 +1844,7 @@
 .most-actives .list-item.request {
     background-color: #83B96A;
 }
+
+.most-actives .list-item.no-message {
+    font-style: italic;
+}
