@@ -65,7 +65,7 @@
                 <div class='cell graph-cell'>
                     <div class='most-actives'>
                         <div class='caption'> 
-                            <span><?php echo __('Most received over the past') ?></span>
+                            <span><?php echo __('Most receiving ... over the past') ?></span>
                             <select id="most-active-selector">
                               <option value="day"><?php echo __('day'); ?></option>
                               <option value="week"><?php echo __('week'); ?></option>
