@@ -33,7 +33,8 @@ abstract class ProgramSpecificMongoModel extends MongoModel
     }
 
 
- 	static function init($className, $databaseName, $forceNew=false) {
+ 	static function init($className, $databaseName, $forceNew=false) 
+    {
         if (!$forceNew) {
             $model = ClassRegistry::init(array(
             	'class' => $className,

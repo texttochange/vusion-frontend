@@ -216,32 +216,7 @@ class Schedule extends ProgramSpecificMongoModel
         return $summary;
         
     }
-    
-    /*
-    public function aggregate() 
-    {
-        $aggregates = array();
-        $pipeline = array(
-            array('$group' => array(
-                '_id' => array(
-                    'year' =>  array('$substr' => array('$date-time', 0, 4)),
-                    'month' => array('$substr' => array('$date-time', 5, 2)),
-                    'day' => array('$substr' => array('$date-time', 8, 2)),
-                    ),
-                'value' => array('$sum' => 1))),
-            array('$project' => array(
-                '_id'=> 0,
-                'date'=> array('$concat' => array('$_id.year', '-', '$_id.month', '-', '$_id.day')),
-                'value'=> 1)),
-            array('$sort' => array(
-                'date' => 1)));
-        $mongo = $this->getDataSource();
-        $cursor = $mongo->aggregateCursor($this, $pipeline);
-        foreach($cursor as $aggregate) {
-            $aggregates[] = $aggregate;
-        }
-        return $aggregates;
-    }*/
+
 
     public function _aggregateSummary($until, $types) 
     {

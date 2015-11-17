@@ -93,61 +93,6 @@ class ProgramHistoryController extends BaseProgramSpecificController
         }
     }
 
-    /*
-    public function aggregate()
-    {
-        $requestSuccess = true;
-        $time = $this->ProgramSetting->getProgramTimeNow(); 
-        $time->modify('-1 year');
-        $histories = $this->History->aggregate(DialogueHelper::fromPhpDateToVusionDate($time));
-        $this->set(compact('histories', 'requestSuccess'));
-        $this->render('index');
-    }
-
-    private function _getByTime() 
-    {
-        $timeframe = 'week';
-        $time = $this->ProgramSetting->getProgramTimeNow(); 
-        if (isset($this->params['query']['by'])) {
-            if ($this->params['query']['by'] == 'program-start') {
-                return null;
-            } 
-            $timeframe = $this->params['query']['by'];
-        }
-        $time->modify("-1 $timeframe");
-        return DialogueHelper::fromPhpDateToVusionDate($time);
-    }
-
-    
-    public function mostActive() 
-    {
-        $requestSuccess = true;
-        $byTime = $this->_getByTime();
-        $dialogueActivities = $this->History->getMostActive($byTime, 'dialogue-id', 'dialogue-id', 'count');
-        $dialogueActivities = $this->Dialogue->fromDialogueIdsToNames($dialogueActivities);
-        $requestActivities = $this->History->getMostActive($byTime, 'request-id', 'request-id', 'count');
-        $requestActivities = $this->Request->fromRequestIdsToKeywords($requestActivities);
-
-        $this->set(compact(
-            'dialogueActivities',
-            'requestActivities',
-            'requestSuccess'));
-    }
-
-
-    public function getStats()
-    {
-        $requestSuccess = true;
-        $time = $this->ProgramSetting->getProgramTimeNow(); 
-        $timeframe = 'week';
-        if (isset($this->params['query']['by'])) {
-            $timeframe = $this->params['query']['by'];
-        }
-        $time->modify("-1 $timeframe");
-        $histories = $this->History->aggregateNvd3(DialogueHelper::fromPhpDateToVusionDate($time));
-        $this->set(compact('histories', 'requestSuccess'));
-        $this->render('index');
-    }*/
 
     public function listHistory()
     {
