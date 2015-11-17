@@ -108,12 +108,14 @@ class ProgramTestCase extends CakeTestCase
             'name' => 'M4h',
             'url' => 'm4h',
             'database' => 'm4h',
+            'programcode' => 'ty23400',
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             );
         
         $this->Program->create();
         $savedProgram = $this->Program->save($program);
+        print_r($savedProgram);
         $this->assertEqual($this->Program->validationErrors, array());
     }
     
@@ -368,7 +370,8 @@ class ProgramTestCase extends CakeTestCase
             'id' => 5,
             'name' => 'M7h',
             'url' => 'm7h',
-            'database' => 'm7h',            
+            'database' => 'm7h',
+            'programcode' => 'ty23400',            
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             );
@@ -379,7 +382,8 @@ class ProgramTestCase extends CakeTestCase
             'id' => 5,
             'name' => 'M7h',
             'url' => 'm7h',
-            'database' => 'm7hp',            
+            'database' => 'm7hp',
+            'programcode' => 'ty23400',            
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             );
@@ -396,7 +400,8 @@ class ProgramTestCase extends CakeTestCase
             'id' => 6,
             'name' => 'M7h',
             'url' => 'm7h',
-            'database' => 'm7h',            
+            'database' => 'm7h',
+            'programcode' => 'ty23400',            
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             );
@@ -407,7 +412,8 @@ class ProgramTestCase extends CakeTestCase
             'id' => 6,
             'name' => 'M7h',
             'url' => 'm7h2014',
-            'database' => 'm7h',            
+            'database' => 'm7h',
+            'programcode' => 'ty23400',            
             'created' => '2012-01-24 15:29:24',
             'modified' => '2012-01-24 15:29:24'
             );
