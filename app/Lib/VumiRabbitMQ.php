@@ -124,6 +124,12 @@ class VumiRabbitMQ {
         return $this->sendMessageTo($to.'.inbound', $msg);
     }
 
+    public function sendMessageToUpdateStats($databaseName)
+    {
+        $msg = $this->workerMessageMaker->updateStats($databaseName);
+        return $this->sendMessageTo('stats.control', $msg);
+    }
+
 
     public function sendMessageTo($to, $msg)
     {

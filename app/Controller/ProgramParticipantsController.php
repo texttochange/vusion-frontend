@@ -15,6 +15,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     
     var $uses = array(
         'Participant',
+        'ParticipantStats',
         'History',
         'Schedule',
         'Dialogue',
@@ -1045,6 +1046,6 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     {
         $this->VumiRabbitMQ->sendMessageToSimulateMO($program, $from, $message);
     }
-    
-    
+
+
 }

@@ -441,5 +441,32 @@ class RequestTestCase extends CakeTestCase
             $this->Request->validationErrors['actions'][0]['content'][0]);
     }
 
+    public function testFromRequestIdsToKeywords()
+    {
+
+        $request = array(
+            'Request' => array(
+                'keyword' => 'keyword'
+            ));
+        $this->Request->create();
+        $savedRequest = $this->Request->save($request);
+
+
+        $input = array(
+            array(
+                'request-id' => $savedRequest['Request']['_id'],
+                'count'=> 3));
+
+        $output = $this->Request->fromRequestIdsToKeywords($input);
+
+        $this->assertEquals(
+            $output,
+            array(array(
+                'request-name' => 'keyword',
+                'request-id' => $savedRequest['Request']['_id'],
+                'count'=> 3))
+            );
+    }
+
   
 }

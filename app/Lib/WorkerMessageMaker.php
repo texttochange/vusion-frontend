@@ -140,5 +140,14 @@ class WorkerMessageMaker
             'interaction_id' => $interaction_id,
             'answer' => $answer);
     }
+
+
+    public function updateStats($databaseName)
+    {
+        return array(
+            'message_type' => 'update_stats',
+            'program_db' => $databaseName
+            );
+    }
     
 }

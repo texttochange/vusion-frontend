@@ -19,8 +19,27 @@
                 'onclick' => 'document.forms[0].submit()'));
         $this->Js->get('#button-save')->event('click',
             '$("#ProgramSettingsEditForm").submit()' , true);
-		
-		echo $this->element('header_content', compact('contentTitle', 'contentActions', 'controller'));
+
+        $contentActions[] = $this->Html->link(__('Restart Worker'),
+            array('program'=>$programDetails['url'],
+                'controller' => $controller),
+            array('class' => 'ttc-button',
+                'id' => 'restart-worker-button'));
+        
+        $this->Js->get('#restart-worker-button')->event(
+            'click',
+            $this->Js->request(
+                array(
+                    'program'=>$programDetails['url'],
+                    'controller' => 'ProgramAjax',
+                    'action'=>'restartWorker.json'),
+                array('method' => 'GET',
+                    'async' => true, 
+                    'contentType' => 'application/json; charset=utf-8',
+                    'dataType' => 'json',
+                    'success' => 'showFlashMessages(data["message"], data["status"]);')));
+        
+        echo $this->element('header_content', compact('contentTitle', 'contentActions', 'controller'));
   ?>
   <div class="ttc-display-area display-height-size">
   <?php 

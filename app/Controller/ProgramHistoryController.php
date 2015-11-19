@@ -2,6 +2,7 @@
 App::uses('BaseProgramSpecificController','Controller');
 App::uses('History','Model');
 App::uses('Dialogue', 'Model');
+App::uses('DialogueHelper', 'Lib');
 App::uses('UnattachedMessage','Model');
 App::uses('Request', 'Model');
 App::uses('Export', 'Model');

@@ -603,6 +603,58 @@ class HistoryTestCase extends CakeTestCase
         $output = $this->History->getParticipantLabels($histories);
         $this->assertEquals('email', $output[0]['History']['participant-labels'][0]['label']);
     }
-    
-    
+
+
+    public function testGetMostActive()
+    {
+        $history = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+788601461',
+            'timestamp' => '2012-03-06T11:06:34',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'1',
+            'dialogue-id'=>'1'
+            );
+        $this->History->create($history);
+        $this->History->save($history);
+
+        $history = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+788601461',
+            'timestamp' => '2012-03-06T11:06:34',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'2',
+            'dialogue-id'=>'1'
+            );
+        $this->History->create($history);
+        $this->History->save($history);
+
+        $history = array(
+            'object-type' => 'dialogue-history',
+            'participant-phone' => '+78866788',
+            'timestamp' => '2012-03-07T11:07:34',
+            'message-content' => 'FEEL nothing',
+            'message-direction' => 'incoming',
+            'interaction-id'=>'1',
+            'dialogue-id'=>'2'
+            );
+        $this->History->create($history);
+        $this->History->save($history);
+
+        $histories = $this->History->getMostActive("2011-01-01T00:00:00", 'dialogue-id', 'x', 'y');
+
+        $this->assertEquals(
+            $histories,
+            array(
+                array(
+                    'x' => '1',
+                    'y' => 2),
+                array(
+                    'x' => '2',
+                    'y' => 1))
+            );
+    }
+
 }

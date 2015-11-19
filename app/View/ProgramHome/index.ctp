@@ -1,61 +1,105 @@
 <?php
-    $this->RequireJs->scripts(array("jquery"));
+    $this->RequireJs->scripts(array("jquery", "graph-nvd3", "moment"));
 ?>
-<div class='Program Home index'>
-    <?php
-        $contentTitle           = __('Sending Next'); 
-        $contentActions         = array();
-        $containsDataControlNav = true;
-        $controller             = 'programRequests';
-        
-        $contentActions[] = $this->Html->link(__('Restart Worker'),
-            array('program'=>$programDetails['url'],
-                'controller' => $controller),
-            array('class' => 'ttc-button',
-                'id' => 'restart-worker-button'));
-        
-        $this->Js->get('#restart-worker-button')->event(
-            'click',
-            $this->Js->request(
-                array('program'=>$programDetails['url'], 'action'=>'restartWorker.json'),
-                array('method' => 'GET',
-                    'async' => true, 
-                    'contentType' => 'application/json; charset=utf-8',
-                    'dataType' => 'json',
-                    'success' => 'showFlashMessages(data["message"], data["status"]);')));
-        
-        echo $this->element('header_content', compact('contentTitle', 'contentActions', 'containsDataControlNav', 'controller'));
-   ?>
-	<div class="ttc-table-display-area">
+<div class='Program Home index dashboard'>
+	<div class="ttc-table-display-area" style='border:none;padding-top:0px'>
 	<div class="ttc-table-scrolling-area display-height-size">
-	<table class="schedules" cellpadding="0" cellspacing="0">
-	    <thead>	
-	        <tr>
-			    <th class="date-time"><?php echo __('At');?></th>			   
-			    <th class="send-to"><?php echo __('To');?></th>	
-			    <th class="content-sending"><?php echo __('Content');?></th>
-			    <th class="source"><?php echo __('Source');?></th>
-			</tr>
-		</thead>
-		<tbody>
-		<?php
-		    foreach ($schedules as $schedule): ?>
-		    <tr>
-		        <td class="date-time"><?php echo $this->Time->format('d/m/Y H:i', $schedule['date-time']); ?>&nbsp;</td>
-		            
-		        <td class="send-to"><?php echo h($schedule['csum']); echo __(" participant(s)"); ?>&nbsp;</td>
-		        <td class="content-sending">&quot;<?php echo h($schedule['content']); ?>&quot;&nbsp;</td>
-		     <?php if (isset($schedule['dialogue-id'])) { 
-		                echo $this->Html->tag('td', __('Dialogue'));
-		            } elseif (isset($schedule['unattach-id'])) {
-		                echo $this->Html->tag('td', __('Separate Msg'));   
-		            } else { ?>
-		        <td></td>
-		            <?php } ?>
-		       </tr>
-		         <?php endforeach; ?>
-		   </tbody>
-		</table>
-		</div>
-		</div>
+        <div class='table' style='width:100%'>
+            <div class='row' style='height:10px'></div>
+            <div class='row'>
+                <div class='cell graph-cell'>
+                    <div class='caption' style='padding-right:10px'> 
+                       <img src='/img/message-icon-20.png' style='height:10px'/>
+                        <span><?php echo __('Message(s)') ?></span>
+                        <select id="history-brief-selector">
+                          <option value="week"><?php echo __("over the past week"); ?></option>
+                          <option value="month"><?php echo __("over the past month"); ?></option>
+                          <option value="year"><?php echo __("over the past year"); ?></option>
+                        </select>
+                    </div>
+                    <div id="history-brief" class="graph">
+                        <img src="/img/ajax-loader.gif">
+                    </div>
+                    <?php $this->RequireJs->runLine('
+                        $("#history-brief").history({"program": "'.$programDetails['url'].'"});');
+                    ?>
+                </div>
+                <div class='cell graph-cell'>
+                    <div class='caption'> 
+                        <img src='/img/schedule-icon-14.png'/>
+                        <span><?php echo __('Scheduled item(s) over the next'); ?></span>
+                        <select id="schedule-brief-selector">
+                          <option selected value="week"><?php echo __("week"); ?></option>
+                          <option value="month"><?php echo __("month"); ?></option>
+                        </select>
+                    </div>
+                    <div id="schedule-brief" class='graph' style=''/>
+                        <img src="/img/ajax-loader.gif"> 
+                    </div>
+                    <?php
+                        $this->RequireJs->runLine('$("#schedule-brief").schedule({"program": "'.$programDetails['url'].'"});');
+                    ?>
+                </div>
+            </div>
+            <div class='row' style='height:30px'></div>
+            <div class='row'>
+                <div class='cell graph-cell'>
+                    <div class='caption' style='padding-right:10px'> 
+                        <img src='/img/participant-icon-14.png' style='padding-left:3px'/>
+                        <span><?php echo __('Participant(s)') ?></span>
+                        <select id="participant-brief-selector">
+                          <option value="week"><?php echo __("over the past week"); ?></option>
+                          <option value="month"><?php echo __("over the past month"); ?></option>
+                          <option value="year"><?php echo __("over the past year"); ?></option>
+                        </select>
+                    </div>
+                    <div id="participant-brief" class='graph'>
+                        <img src="/img/ajax-loader.gif" style='loader'>
+                    </div>
+                    <?php 
+                        $this->RequireJs->runLine('$("#participant-brief").participant({"program": "'.$programDetails['url'].'"});');
+                    ?>
+                </div>
+                <div class='cell graph-cell'>
+                    <div class='most-actives'>
+                        <div class='caption'> 
+                            <span><?php echo __('Most receiving ... over the past') ?></span>
+                            <select id="most-active-selector">
+                              <option value="day"><?php echo __('day'); ?></option>
+                              <option value="week"><?php echo __('week'); ?></option>
+                              <option value="month"><?php echo __('month'); ?></option>
+                            </select>
+                        </div>
+                        <div style='padding:9px 0px 0px 30px'>
+                        <div class='table' style='width:100%'>
+                            <div id='most-active' class='row' >
+                                <div class='cell title list-header' style='width:47%'><?php echo __('Dialogue(s)'); ?></div>
+                                <div class='cell' style='width:5%;min-width:2px'></div>
+                                <div class='cell title list-header' style='width:47%'><?php echo __('Request(s)'); ?></div>        
+                            </div>
+                            <div class='row'>
+                                <div class='cell'>
+                                    <div id="most-active-dialogue">
+                                       <img src="/img/ajax-loader.gif" style='loader'>
+                                    </div>
+                                </div>
+                                <div class='cell'></div>
+                                <div class='cell'>
+                                    <div id="most-active-request">
+                                         <img src="/img/ajax-loader.gif" style='loader'>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php
+                                $this->RequireJs->runLine('$("#most-active").mostActive({"program": "'.$programDetails['url'].'"})')
+                            ?>
+                        </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+	</div>
 </div>

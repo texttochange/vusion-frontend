@@ -1,5 +1,9 @@
 <?php
 App::uses('MongoModel', 'Model');
+App::uses('ParticipantStats', 'Model');
+App::uses('HistoryStats', 'Model');
+App::uses('Participant', 'Model');
+App::uses('History', 'Model');
 
 
 abstract class ProgramSpecificMongoModel extends MongoModel
@@ -29,7 +33,8 @@ abstract class ProgramSpecificMongoModel extends MongoModel
     }
 
 
- 	static function init($className, $databaseName, $forceNew=false) {
+ 	static function init($className, $databaseName, $forceNew=false) 
+    {
         if (!$forceNew) {
             $model = ClassRegistry::init(array(
             	'class' => $className,

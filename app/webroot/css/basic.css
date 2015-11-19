@@ -536,9 +536,7 @@
 }
 
 .ttc-program-index {
-        /*float: left;*/
-        padding: 15px 2%;
-        /*width: 60%;*/
+        padding-top: 15px;
         min-width: 737px;
 }
 
@@ -548,11 +546,10 @@
 }
 
 .ttc-recent-issues {
-       /* float: right;*/
-        padding: 15px;
-       /*width: 339px;*/
-       width: 95%;
+    padding-top: 15px;
+    padding-left: 5%;
 }
+
 .ttc-recent-issues h3 {
         border-bottom: solid;
         padding-bottom: 5px;
@@ -577,10 +574,10 @@
 }
 
 .ttc-issues-list div.ttc-issue-time {
-        /*float: right;
         text-align: right;
         /*margin-top: 17px;*/
-        width: 200px;
+        width: 470px;
+        padding: 0 2px;
 }
 
 .ttc-issue-content h3 {
@@ -1266,9 +1263,7 @@
         }
 
         .ttc-program-index {
-                /*float: left;*/
-                padding: 15px 20px;
-                /*width: 60%;*/
+                padding-top: 15px;
                 min-width: 787px;
         }         
 }
@@ -1779,4 +1774,75 @@
 
 #ui-timepicker-div-fixedtime dt {
     width: 16em;
+}
+
+.dashboard {
+    font: normal 13px helvetica;
+    fill: #555;
+}
+
+.dashboard h4 {
+    color: #2c6877;
+}
+
+.ttc-table-display-area .nvtooltip table {
+    width: inherit;
+}
+
+.dashboard .graph-cell {
+    text-align: left;
+    width: 50%;
+}
+
+.dashboard .graph {
+    min-width: 200px;
+    height: 200px;
+    text-align: center;
+}
+
+.dashboard .graph img {
+    padding-top: 80px;
+    width:40px;
+}
+
+.dashboard .caption {
+    text-align: right;
+}
+
+.nvd3 .nv-axis .nv-axisMaxMin text {
+    font-weight: normal !important;
+}
+
+.nvd3 .nv-axis path.domain {
+    stroke-opacity: 0.5 !important;
+}
+
+.most-active .title {
+    padding-left: 10px;
+}
+
+.most-actives .list {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.most-actives .list-header {
+    /*border: solid 1px gray;*/
+}
+
+.most-actives .list-item {
+    padding:2px;
+    margin-bottom: 1px;
+}
+
+.most-actives .list-item.dialogue {
+    background-color: #B8CC74;
+}
+
+.most-actives .list-item.request {
+    background-color: #83B96A;
+}
+
+.most-actives .list-item.no-message {
+    font-style: italic;
 }
