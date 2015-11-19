@@ -18,6 +18,7 @@ require.config({
         'dform-ext': 'dform/dform.extensions',
         'dform-sub': 'dform/dform.subscribers',
         'dform-conv': 'dform/dform.converters',
+        'jstree': 'jstree.min',
         'unattached-message': 'ttc-unattached-message',
         'responsive-utils': 'ttc-responsive-utils',
         'nav-menu': 'ttc-nav-menu',
@@ -72,7 +73,7 @@ require.config({
         'form2js-utils': {
             deps: ['form2js']
         },
-        'dropit': {
+        'jstree': {
             deps: ['jquery']
         },
         'screen': {
