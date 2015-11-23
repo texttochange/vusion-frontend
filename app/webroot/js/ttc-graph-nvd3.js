@@ -158,7 +158,7 @@
                 var iterateOn = 'days',
                     timeTickFormat = '%d %b %y',
                     momentComparingFormat = 'YYYY-MM-DD',
-                    currentLable = 'today';
+                    currentLabel = 'today';
                 break;
         }
 
