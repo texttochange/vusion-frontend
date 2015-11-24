@@ -194,7 +194,10 @@
             data = fillMissingValues(range, data, iterateOn, options['cumulative']);
             chart.yAxis
                 .tickFormat(function(d) {
-                    return d3.format('d')(d);
+                    if (d < 1000) {
+                        return d3.format('d')(d);
+                    }
+                    return d3.format('.3s')(d);
                 })
                 .ticks(3);
 
