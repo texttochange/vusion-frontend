@@ -1208,7 +1208,7 @@
 @media projection, screen  {    
         body {        
                 margin: 0;
-                min-width: 1061px;
+                min-width: 1106px;
         } 
         #content { 
                 padding-bottom: 20px;
