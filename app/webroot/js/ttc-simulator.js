@@ -13,6 +13,7 @@
         function Simulator(el, options) {
             
             // private variables
+            var moment = require('moment');
             var phone = options.phone.replace(/\#/g,'%23'),
 		    url = '../../programParticipants/view/' + phone,
 		    timeLastHistoryPulled = null;

@@ -345,12 +345,12 @@
         background: #EDEDED;
 }
 
-.ttc-help-box ul {
+.ttc-ajax-loader-box ul {
     list-style-position: inside;
     list-style-type: none;
 }
 
-.ttc-help-box li{
+.ttc-ajax-loader-box li{
     white-space: normal;
     margin-bottom: 0px;
     margin: 0 12px;
@@ -536,9 +536,7 @@
 }
 
 .ttc-program-index {
-        float: left;
-        padding: 15px 2%;
-        width: 60%;
+        padding-top: 15px;
         min-width: 737px;
 }
 
@@ -548,10 +546,10 @@
 }
 
 .ttc-recent-issues {
-        float: right;
-        padding: 15px 2%;
-        width: 29%;
+    padding-top: 15px;
+    padding-left: 5%;
 }
+
 .ttc-recent-issues h3 {
         border-bottom: solid;
         padding-bottom: 5px;
@@ -572,13 +570,14 @@
 .ttc-issues-list div.ttc-issue-content {
         margin-right: 15px;
         overflow: hidden;
+        width: 470px;
 }
 
 .ttc-issues-list div.ttc-issue-time {
-        float: right;
         text-align: right;
         /*margin-top: 17px;*/
-        width: 170px;
+        width: 470px;
+        padding: 0 2px;
 }
 
 .ttc-issue-content h3 {
@@ -995,7 +994,7 @@
         display: none;
         float: left;
         width: 70%;
-        min-width: 450px;
+        min-width: 553px;
         clear: none;
         border: 1px dashed grey;
         background: #FFCB4B;
@@ -1247,6 +1246,7 @@
                 min-width: 190px;
                 margin-bottom: 11px;
                 border: 2px solid #d3d3d3;
+                height: 95px;
         }
         
         .ttc-program-stats-inside  .stat tr:nth-child(even) {
@@ -1263,10 +1263,8 @@
         }
 
         .ttc-program-index {
-                float: left;
-                padding: 15px 2%;
-                width: 60%;
-                min-width: 488px;
+                padding-top: 15px;
+                min-width: 787px;
         }         
 }
 
@@ -1776,4 +1774,75 @@
 
 #ui-timepicker-div-fixedtime dt {
     width: 16em;
+}
+
+.dashboard {
+    font: normal 13px helvetica;
+    fill: #555;
+}
+
+.dashboard h4 {
+    color: #2c6877;
+}
+
+.ttc-table-display-area .nvtooltip table {
+    width: inherit;
+}
+
+.dashboard .graph-cell {
+    text-align: left;
+    width: 50%;
+}
+
+.dashboard .graph {
+    min-width: 200px;
+    height: 200px;
+    text-align: center;
+}
+
+.dashboard .graph img {
+    padding-top: 80px;
+    width:40px;
+}
+
+.dashboard .caption {
+    text-align: right;
+}
+
+.nvd3 .nv-axis .nv-axisMaxMin text {
+    font-weight: normal !important;
+}
+
+.nvd3 .nv-axis path.domain {
+    stroke-opacity: 0.5 !important;
+}
+
+.most-active .title {
+    padding-left: 10px;
+}
+
+.most-actives .list {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.most-actives .list-header {
+    /*border: solid 1px gray;*/
+}
+
+.most-actives .list-item {
+    padding:2px;
+    margin-bottom: 1px;
+}
+
+.most-actives .list-item.dialogue {
+    background-color: #B8CC74;
+}
+
+.most-actives .list-item.request {
+    background-color: #83B96A;
+}
+
+.most-actives .list-item.no-message {
+    font-style: italic;
 }

@@ -514,7 +514,7 @@ class Participant extends ProgramSpecificMongoModel
         }
         return $results;  
     }
-    
+
     
     public function getExportHeaders($conditions = null)
     {

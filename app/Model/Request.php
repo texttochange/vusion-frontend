@@ -397,6 +397,20 @@ class Request extends ProgramSpecificMongoModel
         $this->usedKeywords = $usedKeywords;
         return $this->save($request);
     }
+
+
+    public function fromRequestIdsToKeywords($requestIds)
+    {
+        $keyword = array();
+        $requests = $this->find('all', array('fields' => array('_id', 'keyword')));
+        foreach ($requests as $request) {
+            $keywords[$request['Request']['_id'].''] = $request['Request']['keyword'];
+        } 
+        foreach ($requestIds as &$requestId) {
+            $requestId['request-name'] = $keywords[$requestId['request-id'].''];
+        }
+        return $requestIds;
+    }
     
     
 }

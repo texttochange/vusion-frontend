@@ -46,11 +46,11 @@ function addFormHelp(baseUrl, name, selector) {
 
 
 function requestHelp(elt, baseUrl, topic) {
-    if ($($(elt).parent().next()).attr('class') == 'ttc-help-box') {
+    if ($($(elt).parent().next()).hasClass('ttc-ajax-loader-box')) {
         $(elt).parent().next().remove();
         return;
     }
-    $("<div class='ttc-help-box'><img src='/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent())
+    $("<div class='ttc-ajax-loader-box ttc-help-box'><img src='/img/ajax-loader.gif' /></div>").insertAfter($(elt).parent())
     $.ajax({
         url: '/documentation.json', 
         type: 'GET',
@@ -58,9 +58,9 @@ function requestHelp(elt, baseUrl, topic) {
         dataType: 'json',
         success: function(response) {
             if (response['status'] == 'fail') {
-                $(".ttc-help-box").html(response['message']);
+                $(".ttc-ajax-loader-box").html(response['message']);
             } else {
-                $(".ttc-help-box").html(response['documentation']);
+                $(".ttc-ajax-loader-box").html(response['documentation']);
             }
         }
     }); 
@@ -116,26 +116,8 @@ function isFormSubmit(element) {
     return $("#dynamic-generic-program-form").attr("disabled") != "disabled";
 }
 
-function pullBackendNotifications(url) {
-    $.ajax({ 
-            url: url, 
-            success: function(data){
-                $('#connectionState').hide();
-                if (data['logs']) {
-                    $("#notifications").empty();
-                    for (var x = 0; x < data['logs'].length; x++) {
-                        data['logs'][x] = data['logs'][x].replace(data['logs'][x].substr(1,19),"<span style='font-weight:bold'>"+data['logs'][x].substr(1,19)+"</span>");
-                        $("#notifications").append(data['logs'][x]+"<br \>");
-                    }
-                }
-            },
-            timeout: 500,
-            error: vusionAjaxError,
-    });
-}
-
-
 function updateClock(){
+    var moment = require('moment');
     var newTime = moment($("#local-date-time").text(), "DD/MM/YYYY HH:mm:ss").add('seconds',1).format("DD/MM/YYYY HH:mm:ss");
     $("#local-date-time").text(newTime);    
 }
@@ -608,6 +590,7 @@ function loadProgramStats(){
                 type: "GET",
                 contentType: 'application/json; charset=utf-8',
                 url: "/"+programUrl+"/programAjax/getStats.json",
+                data: {'stats_type': 'summary'}, 
                 success: function(data){
                     renderStats(data['program-url'], data['program-stats'])
                 },
@@ -807,5 +790,5 @@ function localize_label(label) {
 function fromIsoDateToFormDate(dateString) {
     if (dateString == null)
         return '';
-    return Date.parse(dateString).toString('dd/MM/yyyy HH:mm');
+    return moment(dateString).format("DD/MM/YYYY HH:mm:ss");
 }

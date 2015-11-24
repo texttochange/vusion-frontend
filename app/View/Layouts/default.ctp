@@ -18,7 +18,8 @@
 		    'superfish/megafish-1.7.4',
 		    'chosen/chosen-1.0.min',
 		    'handsontable/jquery.handsontable-0.9.18.full',
-		    'jstree/style.min'
+		    'jstree/style.min',
+            'nvd3/nv.d3',
 		    ));
 		echo $scripts_for_layout;
     ?><script>

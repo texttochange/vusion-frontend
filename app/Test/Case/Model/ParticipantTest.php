@@ -1955,5 +1955,4 @@ class ParticipantTestCase extends CakeTestCase
             $result);
     }
 
-    
 }
