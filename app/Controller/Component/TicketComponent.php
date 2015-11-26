@@ -5,14 +5,14 @@ App::uses('CakeEmail', 'Network/Email');
 class TicketComponent extends Component
 {
 
-    var $components          = array('Email');
+    var $components          = array('Email', 'Redis');
     var $EXPIRE_TICKET        = 86400; #in seconds 24h
     var $EXPIRE_INVITE_TICKET = 604800;  #in seconds 7days
 
 
     public function initialize(Controller $controller)
     {
-        $this->Controller = $controller;
+        /*$this->Controller = $controller;
         
         if (isset($this->Controller->redis)) {
             $this->redis = $this->Controller->redis;
@@ -25,7 +25,13 @@ class TicketComponent extends Component
             $this->redisTicketPrefix = $this->Controller->redisTicketPrefix;
         } else {
             throw new InternalErrorException("The Ticket needs a redis instance from his controller.");
-        }
+        }*/
+    }
+    
+    
+    public function beforeRender(Controller $controller)
+    {
+        $this->Redis->redisConnect();
     }
     
     

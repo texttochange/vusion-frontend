@@ -63,10 +63,10 @@ class AppController extends Controller
         'RequireJs',
         );
     
-    var $redis              = null;
+   /* var $redis              = null;
     var $redisProgramPrefix = "vusion:programs";
     var $redisTicketPrefix  = "vusion:tickets"; 
-    var $redisExportPrefix  = "vusion:exports"; 
+    var $redisExportPrefix  = "vusion:exports";*/ 
 
 
     function beforeFilter()
@@ -89,7 +89,7 @@ class AppController extends Controller
     {
         parent::constructClasses();
         
-        $this->redis = new Redis();
+        /*$this->redis = new Redis();
         $redisConfig = Configure::read('vusion.redis');
         $redisHost   = (isset($redisConfig['host']) ? $redisConfig['host'] : '127.0.0.1');
         $redisPort   = (isset($redisConfig['port']) ? $redisConfig['port'] : '6379');
@@ -97,7 +97,7 @@ class AppController extends Controller
         $redisPrefix = Configure::read('vusion.redisPrefix');
         if (is_array($redisPrefix)) { 
             $this->redisProgramPrefix = $redisPrefix['base'] . ':' . $redisPrefix['programs'];
-        }
+        }*/
     }
     
     
