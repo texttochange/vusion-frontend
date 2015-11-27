@@ -10,6 +10,7 @@ class StatsComponent extends Component
     
     public $Controller = null;
     
+    var $components          = array('Redis');
     var $localizedValueLabel = array();
     
     public function __construct(ComponentCollection $collection, $settings = array())
@@ -51,7 +52,7 @@ class StatsComponent extends Component
                 '1000' => '120');
         } 
         
-        if(isset($this->Controller->redis)){
+        /*if(isset($this->Controller->redis)){
             $this->redis = $this->Controller->redis;
         }else{ 
             $this->redis = new Redis();
@@ -62,7 +63,7 @@ class StatsComponent extends Component
             $this->redisProgramPrefix = $this->Controller->redisProgramPrefix;
         }else{
             $this->redisProgramPrefix = 'vusion:programs';
-        }
+        }*/
         
         $this->Controller->set('statsLabels', $this->localizedValueLabel);
     }
@@ -168,12 +169,14 @@ class StatsComponent extends Component
     
     protected function _getStatsKey($database)
     {
+        $this->redisProgramPrefix = $this->Redis->getProgramPrefix();
         return $this->redisProgramPrefix.':'.$database.':stats';
     }
     
     
     public function getProgramStats($database, $onlyCached=false)
     {
+        $this->redis = $this->Redis->redisConnect();
         $statsKey = $this->_getStatsKey($database);
         $stats = $this->redis->get($statsKey);
         

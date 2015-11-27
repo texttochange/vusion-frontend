@@ -6,8 +6,8 @@ class CreditManagerComponent extends Component
 
     var $components          = array('Redis');
     public $Controller         = null;
-    public $redis              = null;
-    public $redisProgramPrefix = null;
+    //public $redis              = null;
+    //public $redisProgramPrefix = null;
 
 
     public function initialize(Controller $controller)
@@ -39,6 +39,8 @@ class CreditManagerComponent extends Component
     {   
         $this->redis = $this->Redis->redisConnect();
         $countKey = $this->getCountKey($programDatabase);
+        print_r($countKey);
+        print_r('!!!!!!!!!!!!');
         $count    = $this->redis->get($countKey);
         if ($count == null || !isset($count)) {
             return null; 
@@ -49,8 +51,11 @@ class CreditManagerComponent extends Component
 
     public function getStatus($programDatabase)
     {
+        $this->redis = $this->Redis->redisConnect();
         $statusKey = $this->getStatusKey($programDatabase);
         $statusRaw = $this->redis->get($statusKey);
+        print_r($statusKey);
+        print_r('%%%%%%%');
         if ($statusRaw == null || !isset($statusRaw)) {
             return null; 
         }
