@@ -4,8 +4,8 @@ App::uses('Component', 'Controller');
 class CreditManagerComponent extends Component
 {
 
-    var $components          = array('Redis');
-    public $Controller         = null;
+    var $components    = array('Redis');
+    public $Controller = null;
     //public $redis              = null;
     //public $redisProgramPrefix = null;
 
@@ -23,25 +23,25 @@ class CreditManagerComponent extends Component
 
     protected function getStatusKey($programDatabase)
     {
-        $this->redisProgramPrefix = $this->Redis->getProgramPrefix();
-        return $this->redisProgramPrefix . ":" . $programDatabase . ":creditmanager:status"; 
+        $redisProgramPrefix = $this->Redis->getProgramPrefix();
+        return $redisProgramPrefix . ":" . $programDatabase . ":creditmanager:status"; 
     }
 
 
     protected function getCountKey($programDatabase)
     { 
-        $this->redisProgramPrefix = $this->Redis->getProgramPrefix();
-        return $this->redisProgramPrefix . ":" . $programDatabase . ":creditmanager:count"; 
+        $redisProgramPrefix = $this->Redis->getProgramPrefix();
+        return $redisProgramPrefix . ":" . $programDatabase . ":creditmanager:count"; 
     }
 
 
     public function getCount($programDatabase)
     {   
-        $this->redis = $this->Redis->redisConnect();
+        $redis = $this->Redis->redisConnect();
         $countKey = $this->getCountKey($programDatabase);
         print_r($countKey);
         print_r('!!!!!!!!!!!!');
-        $count    = $this->redis->get($countKey);
+        $count    = $redis->get($countKey);
         if ($count == null || !isset($count)) {
             return null; 
         }
@@ -51,11 +51,9 @@ class CreditManagerComponent extends Component
 
     public function getStatus($programDatabase)
     {
-        $this->redis = $this->Redis->redisConnect();
+        $redis = $this->Redis->redisConnect();
         $statusKey = $this->getStatusKey($programDatabase);
-        $statusRaw = $this->redis->get($statusKey);
-        print_r($statusKey);
-        print_r('%%%%%%%');
+        $statusRaw = $redis->get($statusKey);
         if ($statusRaw == null || !isset($statusRaw)) {
             return null; 
         }

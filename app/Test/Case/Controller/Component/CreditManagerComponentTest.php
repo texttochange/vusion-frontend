@@ -19,6 +19,14 @@ class TestCreditManagerController extends Controller
         $this->redisProgramPrefix = 'unittest';
     }
 
+    
+    function initialize(Controller $controller)
+    {
+        $this->redis = new Redis();
+        $this->redis->connect('127.0.0.1');
+        $this->redisProgramPrefix = 'unittest';
+    }
+    
 
 }
 
@@ -45,6 +53,9 @@ class CreditManagerComponentTest extends CakeTestCase
         $this->CreditManagerComponent->initialize($this->Controller);
  
         // Retrive the redis object from the controller
+        $this->redis = new Redis();
+        $this->redis->connect('127.0.0.1');
+        $this->redisProgramPrefix = 'unittest';
         $this->redis = $this->Controller->redis;
     }
 

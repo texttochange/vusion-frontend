@@ -55,33 +55,33 @@ class TicketComponent extends Component
     
     public function saveTicket($ticket, $email = null, $invite = array())
     {
-        $this->redis = $this->Redis->redisConnect();
+        $redis = $this->Redis->redisConnect();
         if ($email) {
             $this->_checkInvitedEmailUniqueInRedis($email, $ticket);
         }
         
         $ticketKey = $this->_getTicketKey($ticket);
         if ($invite != array()) {
-            $this->redis->setex($ticketKey, $this->EXPIRE_INVITE_TICKET, json_encode($invite));
+            $redis->setex($ticketKey, $this->EXPIRE_INVITE_TICKET, json_encode($invite));
         } else {
-            $this->redis->setex($ticketKey, $this->EXPIRE_TICKET, $ticket);
+            $redis->setex($ticketKey, $this->EXPIRE_TICKET, $ticket);
         }
     }
     
     
     public function checkTicket($ticketHash)
     {
-        $this->redis = $this->Redis->redisConnect();
+        $redis = $this->Redis->redisConnect();
         $result    = null;
         $ticketKey = $this->_getTicketKey($ticketHash);
-        $ticket    = $this->redis->get($ticketKey);       
+        $ticket    = $redis->get($ticketKey);       
         
         if (empty($ticket)) {
             return $result;
         }
         
         # Ticket is used only once
-        $this->redis->delete($ticketKey);
+        $redis->delete($ticketKey);
         
         $result = $ticket;
         if (is_array(json_decode($result, true))) {
@@ -93,16 +93,16 @@ class TicketComponent extends Component
     
     protected function _checkInvitedEmailUniqueInRedis($email, $ticket)
     {
-        $this->redis = $this->Redis->redisConnect();
-        $ticketInRedis = $this->redis->get($email);
+        $redis = $this->Redis->redisConnect();
+        $ticketInRedis = $redis->get($email);
         
         if ($ticketInRedis) {
-            $this->redis->delete($email);
+            $redis->delete($email);
             
             $ticketKey = $this->_getTicketKey($ticketInRedis);
-            $this->redis->delete($ticketKey);
+            $redis->delete($ticketKey);
         }
-        $this->redis->setex($email, $this->EXPIRE_INVITE_TICKET, $ticket);
+        $redis->setex($email, $this->EXPIRE_INVITE_TICKET, $ticket);
     }
     
     

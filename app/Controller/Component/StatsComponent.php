@@ -169,16 +169,16 @@ class StatsComponent extends Component
     
     protected function _getStatsKey($database)
     {
-        $this->redisProgramPrefix = $this->Redis->getProgramPrefix();
-        return $this->redisProgramPrefix.':'.$database.':stats';
+        $redisProgramPrefix = $this->Redis->getProgramPrefix();
+        return $redisProgramPrefix.':'.$database.':stats';
     }
     
     
     public function getProgramStats($database, $onlyCached=false)
     {
-        $this->redis = $this->Redis->redisConnect();
+        $redis = $this->Redis->redisConnect();
         $statsKey = $this->_getStatsKey($database);
-        $stats = $this->redis->get($statsKey);
+        $stats = $redis->get($statsKey);
         
         if ($stats != null) {
             return (array)json_decode($stats);
@@ -193,7 +193,7 @@ class StatsComponent extends Component
         $end = time();
         $duration = $end - $start;
         $expiring = $this->_getTimeToCacheStatsExpire($duration);
-        $this->redis->setex($statsKey, $expiring, json_encode($programStats));
+        $redis->setex($statsKey, $expiring, json_encode($programStats));
         return $programStats;
     }
     
