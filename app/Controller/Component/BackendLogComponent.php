@@ -5,9 +5,9 @@ class BackendLogComponent extends Component
 {
 
     var $components          = array('Redis');
-    public $Controller         = null;
-    public $redis              = null;
-    public $redisProgramPrefix = null;
+    //public $Controller         = null;
+    //public $redis              = null;
+    //public $redisProgramPrefix = null;
 
 
     public function initialize(Controller $controller) 
@@ -23,19 +23,19 @@ class BackendLogComponent extends Component
     
     protected function getLogsKey($programDatabase)
     {
-        $this->redisProgramPrefix = $this->Redis->getProgramPrefix();
-        return $this->redisProgramPrefix . ":" . $programDatabase . ":logs"; 
+        $redisProgramPrefix = $this->Redis->getProgramPrefix();
+        return $redisProgramPrefix . ":" . $programDatabase . ":logs"; 
     }
 
 
     public function getLogs($programDatabase, $limit=200)
     {  
-        $this->redis = $this->Redis->redisConnect();
+        $redis = $this->Redis->redisConnect();
         $programLogs = array();
 
         $limit = -1 * $limit;
 
-        $logs = $this->redis->zRange($this->getLogsKey($programDatabase), $limit, -1, true);
+        $logs = $redis->zRange($this->getLogsKey($programDatabase), $limit, -1, true);
         foreach ($logs as $key => $value) {
             $programLogs[] = $key;
         }

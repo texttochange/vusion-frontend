@@ -24,13 +24,13 @@ class CreditManagerComponent extends Component
     protected function getStatusKey($programDatabase)
     {
         $redisProgramPrefix = $this->Redis->getProgramPrefix();
-        return $redisProgramPrefix . ":" . $programDatabase . ":creditmanager:status"; 
+        return $redisProgramPrefix . ":" . $programDatabase . ":creditmanager:status";
     }
 
 
     protected function getCountKey($programDatabase)
     { 
-        $redisProgramPrefix = $this->Redis->getProgramPrefix();
+        $redisProgramPrefix = $this->Redis->getProgramPrefix();        
         return $redisProgramPrefix . ":" . $programDatabase . ":creditmanager:count"; 
     }
 
@@ -39,8 +39,6 @@ class CreditManagerComponent extends Component
     {   
         $redis = $this->Redis->redisConnect();
         $countKey = $this->getCountKey($programDatabase);
-        print_r($countKey);
-        print_r('!!!!!!!!!!!!');
         $count    = $redis->get($countKey);
         if ($count == null || !isset($count)) {
             return null; 
