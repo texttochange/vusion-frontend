@@ -44,7 +44,7 @@
             extent_max = moment().format(momentComparingFormat);
         } else if (statsType == 'schedules') {
             extent_min = moment().format(momentComparingFormat);
-            extent_max = moment().add(1, timeframe+'s').format(momentComparingFormat);
+            extent_max = moment().add(1, timeframe+'s').subtract(1, 'days').format(momentComparingFormat);
         }
 
         var itr = moment.twix(new Date(extent_min),new Date(extent_max)).iterate(iterateOn);
@@ -89,6 +89,7 @@
 
     function buildSelector(options) {
         $('#'+ options['eltId'] + "-selector").change(function() {
+            $('#'+ options['eltId']).empty().append('<img src="/img/ajax-loader.gif"></img>');
             selecting(this, options)});
     }
 
@@ -317,7 +318,7 @@
                         if (index > 4) {
                             return;
                         }
-                        $("#most-active-" + name).append($('<div class="list list-item '+name+'"></div>').append(item['count'] +' - ' + item[name+"-name"]));
+                        $("#most-active-" + name).append($('<div class="list list-item '+name+'"></div>').append(item['count'] +' - ' + item[name+"-name"].substring(0,30)));
                     });
                 }
             },
