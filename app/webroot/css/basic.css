@@ -1203,13 +1203,24 @@
         margin-left: 63px;
 }
 
+body {        
+    margin: 0;
+    min-width: 1000px;
+}
 
+.actions a {
+    display: block; 
+    margin-top: 2px !important;
+}
+
+@media (min-width: 1160px) {
+    .actions a {
+        display: inline;
+    }
+}
 
 @media projection, screen  {    
-        body {        
-                margin: 0;
-                min-width: 1106px;
-        } 
+        
         #content { 
                 padding-bottom: 20px;
                 min-width: 800px;
