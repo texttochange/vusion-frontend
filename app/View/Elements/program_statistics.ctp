@@ -10,9 +10,11 @@ if (count($programStats['programStats']) <= 0) {
     $programStats['programStats'] = $this->BigNumber->roundOffNumbers($programStats['programStats']);
     $this->RequireJs->runLine('renderStats("programstats",'.$this->Js->object($programStats['programStats']).')');
 }
-echo '<span id="programstats">';
-echo '<img src="/img/ajax-loader.gif">';
-echo '</span>';
+?>
+<span id="programstats">
+    <img src="/img/ajax-loader.gif" class="simulator-image-load">
+</span>
+<?php
 if (isset($creditStatus['count'])) {    
     echo '<span>';
     echo '<table class="stat">';
