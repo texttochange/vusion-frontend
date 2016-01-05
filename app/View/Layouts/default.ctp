@@ -44,14 +44,14 @@
                     <div class="table" style="width:100%">
                         <div class="heading">
                             <div class="row" style='border-spacing:0px'>
-                              <div class="cell" style="width:200px">
+                                <div class="cell" style="width:200px">
                                   <div class='program-left-column'>
                                   <?php
                                         echo $this->element('navigation_menu');
                                         if ($programDetails['status'] == 'running') {
                                             if (isset($programDetails['settings']['shortcode']) 
                                                 && isset($programDetails['settings']['timezone'])) {
-                                            echo $this->element('program_statistics');
+                                                echo $this->element('program_statistics');
                                                 }
                                                 echo $this->element('backend_notifications');
                                         } else {  //archived program

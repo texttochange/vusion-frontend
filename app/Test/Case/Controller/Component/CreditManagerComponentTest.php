@@ -8,27 +8,35 @@ App::uses('CreditManagerComponent', 'Controller/Component');
 
 class TestCreditManagerController extends Controller 
 {
-
+    
     var $components = array('CreditManager');
-
-
+    
+    
     function constructClasses() 
     {
         $this->redis = new Redis();
         $this->redis->connect('127.0.0.1');
         $this->redisProgramPrefix = 'unittest';
     }
-
-
+    
+    
+    /*function initialize(Controller $controller)
+    {
+        $this->redis = new Redis();
+        $this->redis->connect('127.0.0.1');
+        $this->redisProgramPrefix = 'unittest';
+    }*/
+    
+    
 }
 
 
 class CreditManagerComponentTest extends CakeTestCase
 {
-
+    
     public $CreditManagerComponent = null;
     public $Controller = null;
-
+    
     
     public function setUp() 
     {
@@ -37,18 +45,21 @@ class CreditManagerComponentTest extends CakeTestCase
         $this->CreditManagerComponent = new CreditManagerComponent($Collection);
         $CakeRequest = new CakeRequest();
         $CakeResponse = new CakeResponse();
-
+        
         $this->Controller = new TestCreditManagerController($CakeRequest, $CakeResponse);
         // Don't get why but me need to manually call the constructClasses function
         $this->Controller->constructClasses();
         // We also need to call the callback
         $this->CreditManagerComponent->initialize($this->Controller);
- 
+        
         // Retrive the redis object from the controller
+        $this->redis = new Redis();
+        $this->redis->connect('127.0.0.1');
+        $this->redisProgramPrefix = 'unittest';
         $this->redis = $this->Controller->redis;
     }
-
-
+    
+    
     public function tearDown()
     {
         $keys = $this->redis->keys('unittest:*');
@@ -56,8 +67,8 @@ class CreditManagerComponentTest extends CakeTestCase
             $this->redis->delete($key);
         }
     }
-
-
+    
+    
     public function mkStatus($status) {
         return array(
             'object-type' => 'credit-status',
@@ -65,21 +76,32 @@ class CreditManagerComponentTest extends CakeTestCase
             'since' => '2013-01-01T10:10:10',
             'status' => $status);
     }
-
-
+    
+    
     public function testGetStatus() 
     {
+        $this->CreditManagerComponent->Redis = $this->getMock('Redis', array('redisConnect','getProgramPrefix'));
+        $this->CreditManagerComponent->Redis
+        ->expects($this->once())
+        ->method('redisConnect')
+        ->will($this->returnValue($this->redis));
+        
+        $this->CreditManagerComponent->Redis
+        ->expects($this->once())
+        ->method('getProgramPrefix')
+        ->will($this->returnValue('unittest')); 
+        
         $status = $this->mkStatus('ok');
         $key = "unittest:programdatabase:creditmanager:status"; 
         $this->redis->set($key, json_encode($status));
-
+        
         $this->assertEqual(
             $status,
             $this->CreditManagerComponent->getStatus('programdatabase')
             );
     }
-
-
+    
+    
     public function testGetStatus_fail() 
     {
         $this->assertEqual(
@@ -87,20 +109,31 @@ class CreditManagerComponentTest extends CakeTestCase
             $this->CreditManagerComponent->getStatus('programdatabase')
             );
     }
-
+    
     
     public function testGetCount() 
     {
+        $this->CreditManagerComponent->Redis = $this->getMock('Redis', array('redisConnect','getProgramPrefix', 'get'));
+        $this->CreditManagerComponent->Redis
+        ->expects($this->once())
+        ->method('redisConnect')
+        ->will($this->returnValue($this->redis));
+        
+        $this->CreditManagerComponent->Redis
+        ->expects($this->once())
+        ->method('getProgramPrefix')
+        ->will($this->returnValue('unittest')); 
+        
         $key = "unittest:programdatabase:creditmanager:count"; 
         $this->redis->set($key, 10);
-
+        
         $this->assertEqual(
             10,
             $this->CreditManagerComponent->getCount('programdatabase')
             );
     }
-
-
+    
+    
     public function testGetCount_fail() 
     {
         $this->assertEqual(
@@ -108,6 +141,6 @@ class CreditManagerComponentTest extends CakeTestCase
             $this->CreditManagerComponent->getCount('programdatabase')
             );
     }
-
-
+    
+    
 }

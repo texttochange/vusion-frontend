@@ -13,9 +13,9 @@ App::uses('ProgramSetting', 'Model');
 
 class TestStatsComponentController extends Controller
 {
-
+    
     var $components = array('Stats');
-
+    
     function constructClasses()
     {
         $this->redis = new Redis();
@@ -28,11 +28,11 @@ class TestStatsComponentController extends Controller
 
 class StatsComponentTest extends CakeTestCase
 {
-
+    
     public $StatsComponent = null;
     public $Controller = null;
     
-
+    
     public function setUp()
     {
         parent::setUp();
@@ -45,14 +45,14 @@ class StatsComponentTest extends CakeTestCase
         $this->Controller->constructClasses();
         $this->StatsComponent->initialize($this->Controller);
         $this->StatsComponent->startup($this->Controller);
-  
+        
         $this->redis = $this->Controller->redis;
         
         $this->instanciateModels(
             array('Participant', 'Schedule', 'History', 'ProgramSetting'), 
             'testdbprogram');
         $this->ProgramSetting->saveProgramSetting('timezone','Africa/Kampala');
-
+        
         $this->Maker = new ScriptMaker();
     }
     
@@ -68,7 +68,7 @@ class StatsComponentTest extends CakeTestCase
     
     protected function instanciateModels($modelNames, $options)
     {
-       foreach ($modelNames as $modelName) {
+        foreach ($modelNames as $modelName) {
             $this->{$modelName} = ProgramSpecificMongoModel::init($modelName, $options, true);
         }
     }
@@ -107,6 +107,17 @@ class StatsComponentTest extends CakeTestCase
     
     public function testGetStats()
     {
+        $this->StatsComponent->Redis = $this->getMock('Redis', array('redisConnect','getProgramPrefix'));
+        $this->StatsComponent->Redis
+        ->expects($this->once())
+        ->method('redisConnect')
+        ->will($this->returnValue($this->redis));
+        
+        $this->StatsComponent->Redis
+        ->expects($this->once())
+        ->method('getProgramPrefix')
+        ->will($this->returnValue('unittest')); 
+        
         $this->redisProgramPrefix = 'unittest';        
         $testStats = $this->mkStats();
         $program = array(
@@ -122,7 +133,7 @@ class StatsComponentTest extends CakeTestCase
             $programTestStats
             );
     }
-        
+    
     
     public function testGetStats_noStatsInRedis()
     {
@@ -144,7 +155,7 @@ class StatsComponentTest extends CakeTestCase
             'message-status' => 'delivered');
         $this->History->create($history_1);
         $savedHistory = $this->History->save($history_1);
-
+        
         $history_2 = array(
             'object-type' => 'unattach-history',
             'participant-phone' => '256712747842',
@@ -175,40 +186,40 @@ class StatsComponentTest extends CakeTestCase
     {
         $dummyHistory = $this->getMock('Model', array('count'));
         $dummyHistory
-        	->expects($this->once())
-        	->method('count')
-        	->will($this->throwException(new Exception));
-        	
+        ->expects($this->once())
+        ->method('count')
+        ->will($this->throwException(new Exception));
+        
         $programTestStats = $this->StatsComponent->getProgramStat($dummyHistory, $onlyCached=true);
         
         $this->assertEqual('N/A', $programTestStats);
     }
     
-
+    
     public function testGetTimeToCacheStatsExpire()
     {
         $this->StatsComponent->cacheStatsExpire = array(
             1000 => 30,
             2000 => 60,
             3000 => 120);
-
-        $this->assertEqual(
-           30,
-           $this->StatsComponent->_getTimeToCacheStatsExpire(100));
-
-        $this->assertEqual(
-           60,
-           $this->StatsComponent->_getTimeToCacheStatsExpire(1100));
         
         $this->assertEqual(
-           60,
-           $this->StatsComponent->_getTimeToCacheStatsExpire(2000));
-
+            30,
+            $this->StatsComponent->_getTimeToCacheStatsExpire(100));
+        
         $this->assertEqual(
-           120,
-           $this->StatsComponent->_getTimeToCacheStatsExpire(4000));
+            60,
+            $this->StatsComponent->_getTimeToCacheStatsExpire(1100));
+        
+        $this->assertEqual(
+            60,
+            $this->StatsComponent->_getTimeToCacheStatsExpire(2000));
+        
+        $this->assertEqual(
+            120,
+            $this->StatsComponent->_getTimeToCacheStatsExpire(4000));
     }
-
+    
     
     public function testGetStats_noCachedStats()
     {       
@@ -218,5 +229,6 @@ class StatsComponentTest extends CakeTestCase
             null,
             $programTestStats);
     }
-
+    
+    
 }

@@ -4,37 +4,42 @@ App::uses('Component', 'Controller');
 class CreditManagerComponent extends Component
 {
 
-    public $Controller         = null;
-    public $redis              = null;
-    public $redisProgramPrefix = null;
+    var $components    = array('Redis');
+    public $Controller = null;
+    //public $redis              = null;
+    //public $redisProgramPrefix = null;
 
 
-    public function initialize(Controller $controller) {
-        $this->Controller = $controller;
+    public function initialize(Controller $controller)
+    {
+       /*$this->Controller = $controller;
         if (!isset($this->Controller->redis) || $this->Controller->redisProgramPrefix == null) {
             throw new InternalErrorException("The CreditManager need a redis instance from his controller.");
         }
         $this->redis = $this->Controller->redis;
-        $this->redisProgramPrefix = $this->Controller->redisProgramPrefix;
+        $this->redisProgramPrefix = $this->Controller->redisProgramPrefix;*/
     }
 
 
     protected function getStatusKey($programDatabase)
     {
-        return $this->redisProgramPrefix . ":" . $programDatabase . ":creditmanager:status"; 
+        $redisProgramPrefix = $this->Redis->getProgramPrefix();
+        return $redisProgramPrefix . ":" . $programDatabase . ":creditmanager:status";
     }
 
 
     protected function getCountKey($programDatabase)
-    {
-        return $this->redisProgramPrefix . ":" . $programDatabase . ":creditmanager:count"; 
+    { 
+        $redisProgramPrefix = $this->Redis->getProgramPrefix();        
+        return $redisProgramPrefix . ":" . $programDatabase . ":creditmanager:count"; 
     }
 
 
     public function getCount($programDatabase)
-    {
+    {   
+        $redis = $this->Redis->redisConnect();
         $countKey = $this->getCountKey($programDatabase);
-        $count    = $this->redis->get($countKey);
+        $count    = $redis->get($countKey);
         if ($count == null || !isset($count)) {
             return null; 
         }
@@ -44,8 +49,9 @@ class CreditManagerComponent extends Component
 
     public function getStatus($programDatabase)
     {
+        $redis = $this->Redis->redisConnect();
         $statusKey = $this->getStatusKey($programDatabase);
-        $statusRaw = $this->redis->get($statusKey);
+        $statusRaw = $redis->get($statusKey);
         if ($statusRaw == null || !isset($statusRaw)) {
             return null; 
         }
@@ -53,7 +59,8 @@ class CreditManagerComponent extends Component
     }
 
 
-    public function getOverview($programDatabase){
+    public function getOverview($programDatabase)
+    {
         return array(
             'count' => $this->getCount($programDatabase),
             'manager' => $this->getStatus($programDatabase));
