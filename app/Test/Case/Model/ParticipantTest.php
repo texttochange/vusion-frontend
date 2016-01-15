@@ -1324,6 +1324,18 @@ class ParticipantTestCase extends CakeTestCase
         $this->assertEquals(
             'Error a tag is not valid: max$hi.',
             $this->Participant->importErrors[0]);
+    }    
+    
+    public function testImport_kojakParticipants_csv()
+    {
+        $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
+        $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');
+
+        $report = $this->Participant->import('testUrl', TESTS.'files/kojak_participants.csv', null);
+
+        $this->assertEquals(3, count($report));
+        $participants = $this->Participant->find('all');
+        $this->assertEquals(3, count($participants));
     }
     
     
