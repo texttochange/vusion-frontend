@@ -1326,7 +1326,7 @@ class ParticipantTestCase extends CakeTestCase
             $this->Participant->importErrors[0]);
     }    
     
-    public function testImport_kojakParticipants_csv()
+    public function testImport_kojakExport_csv()
     {
         $this->ProgramSetting->saveProgramSetting('shortcode', '8282');
         $this->ProgramSetting->saveProgramSetting('timezone', 'Africa/Kampala');

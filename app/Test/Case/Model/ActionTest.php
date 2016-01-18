@@ -287,7 +287,7 @@ class ActionTestCase extends CakeTestCase
             "The field set-only-optin-count doesn't have a valide value.",
             $this->Action->validationErrors['set-only-optin-count'][0]);
         $this->assertEqual(
-            "Use only DOT, space, letters and numbers for the label value.",
+            "Use only DOT, space, letters, :, /, ' and numbers for the label value.",
             $this->Action->validationErrors['proportional-labels'][0]['label-value'][0]);
         $this->assertEqual(
             'The weight value can only be a integer.',
