@@ -10,6 +10,7 @@ class StatsComponent extends Component
     
     public $Controller = null;
     
+    var $components          = array('Redis');
     var $localizedValueLabel = array();
     
     public function __construct(ComponentCollection $collection, $settings = array())
@@ -51,7 +52,7 @@ class StatsComponent extends Component
                 '1000' => '120');
         } 
         
-        if(isset($this->Controller->redis)){
+        /*if(isset($this->Controller->redis)){
             $this->redis = $this->Controller->redis;
         }else{ 
             $this->redis = new Redis();
@@ -62,7 +63,7 @@ class StatsComponent extends Component
             $this->redisProgramPrefix = $this->Controller->redisProgramPrefix;
         }else{
             $this->redisProgramPrefix = 'vusion:programs';
-        }
+        }*/
         
         $this->Controller->set('statsLabels', $this->localizedValueLabel);
     }
@@ -168,14 +169,16 @@ class StatsComponent extends Component
     
     protected function _getStatsKey($database)
     {
-        return $this->redisProgramPrefix.':'.$database.':stats';
+        $redisProgramPrefix = $this->Redis->getProgramPrefix();
+        return $redisProgramPrefix.':'.$database.':stats';
     }
     
     
     public function getProgramStats($database, $onlyCached=false)
     {
+        $redis = $this->Redis->redisConnect();
         $statsKey = $this->_getStatsKey($database);
-        $stats = $this->redis->get($statsKey);
+        $stats = $redis->get($statsKey);
         
         if ($stats != null) {
             return (array)json_decode($stats);
@@ -190,7 +193,7 @@ class StatsComponent extends Component
         $end = time();
         $duration = $end - $start;
         $expiring = $this->_getTimeToCacheStatsExpire($duration);
-        $this->redis->setex($statsKey, $expiring, json_encode($programStats));
+        $redis->setex($statsKey, $expiring, json_encode($programStats));
         return $programStats;
     }
     

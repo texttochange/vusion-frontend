@@ -158,13 +158,6 @@ class ProgramAuthComponentTest extends CakeTestCase
             ->with('id')
             ->will($this->returnValue(2));
 
-        $this->Controller->BackendLog = $this->getMock('BackendLog', array('getLogs'));
-        $this->Controller->BackendLog
-            ->expects($this->once())
-            ->method('getLogs')
-            ->with('m6h')
-            ->will($this->returnValue(array()));
-
         $this->Controller->Stats = $this->getMock('Stats', array('getProgramStats'));
         $this->Controller->Stats
             ->expects($this->once())
