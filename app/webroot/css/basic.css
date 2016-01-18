@@ -1203,70 +1203,78 @@
         margin-left: 63px;
 }
 
-
-
-@media projection, screen  {    
-        body {        
-                margin: 0;
-                min-width: 1061px;
-        } 
-        #content { 
-                padding-bottom: 20px;
-                min-width: 800px;
-                overflow-x: hidden;
-        } 
-        
-        #content-popup { 
-                padding-top: 10px;
-                padding-left: 1.5em;
-                padding-right: 1.5em;
-                padding-bottom: 20px;
-                min-width: 560px;
-                position: relative;
-                overflow-x: hidden;
-                height: 483px;
-                background: #fff;
-                clear: both;
-                color: #333;
-                padding: 10px 20px 20px 20px;
-                overflow: auto;
-                height: 470px;    
-        }         
-
-        .ttc-program-stats {
-                left: 36%;
-                padding-left: 73px;
-                font-size: 11px;
-        }
-        
-        .ttc-program-stats-inside {
-                padding: 2px;
-                font-size: 12px;
-                overflow-y: auto;
-                min-width: 190px;
-                margin-bottom: 11px;
-                border: 2px solid #d3d3d3;
-                height: 95px;
-        }
-        
-        .ttc-program-stats-inside  .stat tr:nth-child(even) {
-                background: none;
-        }
-        
-        .ttc-program-stats-inside  .stat tr td{
-                border-bottom: none;
-                padding-bottom: 1px;
-        }
-        
-        .ttc-program-stats .stat {
-                font-weight: bold;
-        }
-
-        .ttc-program-index {
-                padding-top: 15px;
-                min-width: 787px;
-        }         
+body {        
+    margin: 0;
+    min-width: 1000px;
 }
+
+.actions a {
+    display: block; 
+    margin-top: 2px !important;
+}
+
+@media (min-width: 1160px) {
+    .actions a {
+        display: inline;
+    }
+}
+
+#content { 
+        padding-bottom: 20px;
+        min-width: 800px;
+        overflow-x: hidden;
+} 
+
+#content-popup { 
+        padding-top: 10px;
+        padding-left: 1.5em;
+        padding-right: 1.5em;
+        padding-bottom: 20px;
+        min-width: 560px;
+        position: relative;
+        overflow-x: hidden;
+        height: 483px;
+        background: #fff;
+        clear: both;
+        color: #333;
+        padding: 10px 20px 20px 20px;
+        overflow: auto;
+        height: 470px;    
+}         
+
+.ttc-program-stats {
+        left: 36%;
+        padding-left: 73px;
+        font-size: 11px;
+}
+
+.ttc-program-stats-inside {
+        padding: 2px;
+        font-size: 12px;
+        overflow-y: auto;
+        min-width: 190px;
+        margin-bottom: 11px;
+        border: 2px solid #d3d3d3;
+        height: 95px;
+}
+
+.ttc-program-stats-inside  .stat tr:nth-child(even) {
+        background: none;
+}
+
+.ttc-program-stats-inside  .stat tr td{
+        border-bottom: none;
+        padding-bottom: 1px;
+}
+
+.ttc-program-stats .stat {
+        font-weight: bold;
+}
+
+.ttc-program-index {
+        padding-top: 15px;
+        min-width: 787px;
+}         
 
 .program-left-column {
         float: left;
