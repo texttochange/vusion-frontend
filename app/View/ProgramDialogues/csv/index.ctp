@@ -30,7 +30,7 @@ foreach($dialogues as $dialogue) {
                 }
                 $line[] = implode(',', $answers);
             } else {
-            	$line[] = $interaction['answer-label'];   
+                $line[] = $interaction['answer-label'];
                 $line[] = '';
             }
         } elseif ($interaction['type-interaction'] === 'question-answer-keyword') {
