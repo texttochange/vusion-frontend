@@ -43,7 +43,8 @@
 	Router::mapResources('programRequests', array('prefix' => '/:program/'));
 	Router::mapResources('programParticipants', array('prefix'=> '/:program/'));
 	Router::mapResources('Programs');
-	Router::mapResources('ProgramsAjax', array('prefix'=> '/:program/'));
+	Router::mapResources('ProgramRemoteSurvery');
+	Router::mapResources('ProgramsAjax2', array('prefix'=> '/:program/'));
 	//Router::mapResources('users');
 	Router::parseExtensions('json', 'csv');
 
@@ -67,7 +68,23 @@
 			'controller' => 'programs',
 			'action' => 'index'
 			)
+		);	
+	
+	Router::connect(
+		'/ProgramRemoteSurvery/:action/*',
+		array(
+			'controller' => 'ProgramRemoteSurvery',
+			'action' => 'index'
+			)
 		);
+	
+	Router::connect(
+		'/ProgramRemoteSurvery',
+		array(
+			'controller' => 'ProgramRemoteSurvery',
+			'action' => 'index'
+			)
+		);	
 	
 	Router::connect(
 		'/users/:action/*',
