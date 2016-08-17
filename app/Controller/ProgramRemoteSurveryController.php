@@ -19,11 +19,22 @@ class ProgramRemoteSurveryController extends AppController
         'ShortCode',
         'CreditLog');
     
+    var $components = array(
+        'RequestHandler' => array(
+            'viewClassMap' => array(
+                'json' => 'View')),
+        'UserAccess');
+    
+    var $helpers = array('Time',
+        'Js' => array('Jquery')); 
+    
+    
     function constructClasses()
     {
         parent::constructClasses();        
         $this->_instanciateVumiRabbitMQ();
     }
+    
     
     protected function _instanciateVumiRabbitMQ()
     {
@@ -35,11 +46,11 @@ class ProgramRemoteSurveryController extends AppController
     {
         $requestSuccess = false;
         $data           = $this->_ajaxDataPatch();
+        
         if ($this->request->is('post')) {
             $savedProgram = null;
             $this->Program->create();
             if ($savedProgram = $this->Program->save($data)) {
-                //print_r($savedProgram);
                 $requestSuccess = true;
                 $eventData = array(
                     'programDatabaseName' => $savedProgram['Program']['database'],
@@ -48,21 +59,15 @@ class ProgramRemoteSurveryController extends AppController
                 
                 $this->Session->setFlash(__('The program has been saved.'),
                     'default', array('class'=>'message success'));
-               /* //Start the backend
+                //Start the backend
                 $this->_startBackendWorker(
                     $savedProgram['Program']['url'],
-                    $savedProgram['Program']['database']);*/
+                    $savedProgram['Program']['database']);
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
             }
         }
-        
-        $programs       = $this->_getPrograms();
-        $programOptions = array();        
-        foreach($programs as $program) 
-            $programOptions[$savedProgram['Program']['id']] = $savedProgram['Program']['name'];         
-        $this->set(compact('programOptions', 'requestSuccess'));
-        //$this->set(compact('requestSuccess'));*/
+        $this->set(compact('requestSuccess','savedProgram'));
     }
     
     
