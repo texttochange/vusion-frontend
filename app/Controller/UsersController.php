@@ -754,7 +754,7 @@ class UsersController extends AppController
             $this->Acl->deny($Group, 'controllers/Programs');
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
-            $this->Acl->allow($Group, 'controllers/ProgramRemoteSurvery');
+            $this->Acl->allow($Group, 'controllers/InstantSurvery');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants');
             $this->Acl->allow($Group, 'controllers/ProgramDialogues');
@@ -789,7 +789,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
-            $this->Acl->allow($Group, 'controllers/ProgramRemoteSurvery');
+            $this->Acl->allow($Group, 'controllers/InstantSurvery');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/edit');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/add');
@@ -828,7 +828,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
-            $this->Acl->allow($Group, 'controllers/ProgramRemoteSurvery');
+            $this->Acl->allow($Group, 'controllers/InstantSurvery');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
@@ -859,7 +859,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/Programs/index');
             $this->Acl->allow($Group, 'controllers/Programs/view');
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
-            $this->Acl->allow($Group, 'controllers/ProgramRemoteSurvery');
+            $this->Acl->allow($Group, 'controllers/InstantSurvery');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/edit');
             $this->Acl->deny($Group, 'controllers/ProgramParticipants/add');

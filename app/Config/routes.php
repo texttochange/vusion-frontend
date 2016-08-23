@@ -43,7 +43,7 @@
 	Router::mapResources('programRequests', array('prefix' => '/:program/'));
 	Router::mapResources('programParticipants', array('prefix'=> '/:program/'));
 	Router::mapResources('Programs');
-	Router::mapResources('ProgramsRemoteSurvery');
+	Router::mapResources('InstantSurvery');
 	Router::mapResources('ProgramsAjax', array('prefix'=> '/:program/'));
 	//Router::mapResources('users');
 	Router::parseExtensions('json', 'csv');
@@ -71,17 +71,17 @@
 		);	
 	
 	Router::connect(
-		'/ProgramRemoteSurvery/:action/*',
+		'/InstantSurvery/:action/*',
 		array(
-			'controller' => 'ProgramRemoteSurvery',
+			'controller' => 'InstantSurvery',
 			'action' => 'index'
 			)
 		);
 	
 	Router::connect(
-		'/ProgramRemoteSurvery',
+		'/InstantSurvery',
 		array(
-			'controller' => 'ProgramRemoteSurvery',
+			'controller' => 'InstantSurvery',
 			'action' => 'index'
 			)
 		);	
