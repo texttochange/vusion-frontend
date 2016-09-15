@@ -34,7 +34,7 @@
 				array(), 
 				array('class' => 'ttc-link-header', 'url' => $reportIssueUrl, 'onclick'=> 'popupBrowser(this)'));
 			
-			echo $this->Documentation->link(); 
+			//echo $this->Documentation->link(); 
 		}
 		echo $this->AclLink->generateButton(
 			__('Credit Viewer'), null, 'creditViewer', null, array('class'=>'ttc-link-header'));
