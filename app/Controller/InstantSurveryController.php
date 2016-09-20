@@ -16,7 +16,8 @@ class InstantSurveryController extends AppController
     var $uses = array(
         'Program', 
         'Group',
-        'ShortCode');
+        'ShortCode',
+        'ProgramSetting');
     
     var $components = array(
         'RequestHandler' => array(
@@ -38,11 +39,18 @@ class InstantSurveryController extends AppController
     
     public function addSurvery()
     {
-        $requestSuccess = true;
-        $data  = $this->NewProgram->ajaxDatapatch($this->data);
+        //$data  = $this->NewProgram->ajaxDatapatch($this->data);        
         
         if ($this->request->is('post')) {
             $savedProgram = null;
+            $jsonData = $this->request->data;
+            
+            // print_r($this->request->data);
+            
+            $data['Program']['name'] = $jsonData['survey']['uid'];
+            $data['Program']['url'] = str_replace('_', '', $jsonData['survey']['uid']);
+            $data['Program']['database'] = str_replace('_', '', $jsonData['survey']['uid']);
+            
             $this->Program->create();
             if ($savedProgram = $this->Program->save($data)) {
                 $requestSuccess = true;
@@ -51,18 +59,36 @@ class InstantSurveryController extends AppController
                     'programName' => $savedProgram['Program']['name']);
                 $this->UserLogMonitor->setEventData($eventData);
                 
-                $this->Session->setFlash(__('The program has been saved.'),
-                    'default', array('class'=>'message success'));
                 //Start the backend
                 $this->_startBackendWorker(
                     $savedProgram['Program']['url'],
                     $savedProgram['Program']['database']);
+                
+                //Set program setting hardcoded
+                $this->_setProgramSettings();
+                
+                //Set closed questions 
+                
+                
+                
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
             }
         }
         $this->set(compact('requestSuccess','savedProgram'));
     }
+    
+    
+    protected function _setProgramSettings()
+    {
+        $settings = array (
+            'shortcode' => '256-8282',
+            'international-prefix' => '256',
+            'timezone' => 'Africa/Kampala'
+            );        
+        
+        return $this->ProgramSetting->saveProgramSettings($settings);
+    }   
     
     
     protected function _instanciateVumiRabbitMQ()
@@ -76,5 +102,10 @@ class InstantSurveryController extends AppController
         $this->VumiRabbitMQ->sendMessageToCreateWorker($workerName,$databaseName);         
     }
     
+    
+    protected function _stopBackendWorker($workerName, $databaseName)
+    {
+        $this->VumiRabbitMQ->sendMessageToRemoveWorker($workerName, $databaseName);         
+    }
     
 }
