@@ -34,7 +34,8 @@ class VusionConst
 
     const LABEL_SELECTOR_REGEX = '/^[\p{L}\p{Mn}\p{N}\p{Zs}]+:([\p{L}\p{Mn}\p{N}\p{Zs}@\.]+|\[(participant)\.[\p{L}\p{Mn}\p{N}\p{Zs}]+\])$/u';
 
-    const APOSTROPHE_REGEX = '/.*[’`’‘]/';
+    //const APOSTROPHE_REGEX = '/.*[’`’‘]/';
+    const APOSTROPHE_REGEX = '/.*[’`’‘]+[?!መ,ፀ,ቀ,ዘ,ሙ,ሀ,ኘ,ጀ]/';
     const APOSTROPHE_FAIL_MESSAGE = 'The apostrophe used is not allowed.';
 
     const DATE_REGEX = '/^\d{4}-\d{2}-\d{2}$/';
