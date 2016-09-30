@@ -332,7 +332,7 @@ class RequestTestCase extends CakeTestCase
             'Request' => array(
                 'keyword' => 'keyword',
                 'responses' => array(
-                    array('content' => 'what`up'))
+                    array('content' => 'what‘up'))
             ));
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
@@ -411,7 +411,7 @@ class RequestTestCase extends CakeTestCase
             'Request' => array(
                 'keyword' => 'keyword',
                 'responses' => array(
-                    array('content' => 'what`is up'))
+                    array('content' => 'what‘is up'))
             ));
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
@@ -430,7 +430,7 @@ class RequestTestCase extends CakeTestCase
                 'actions' => array(
                     array(
                         'type-action' => 'feedback',
-                        'content' => 'what`up'))
+                        'content' => 'what‘up'))
             ));
         $this->Request->create();
         $savedRequest = $this->Request->save($request);
