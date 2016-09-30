@@ -852,7 +852,7 @@ function requireLetterDigitSpace(value, element, param) {
 }
 
 function forbiddenApostrophe(value, element, param) {
-    r = new RegExp('[’`’‘]+[?!መ,ፀ,ቀ,ዘ,ሙ,ሀ,ኘ,ጀ]');
+    r = new RegExp('[’`’‘]+[?!መፀቀዘሙሀኘጀዙ]');
     if (r.test(value)) {
         return false;
     }
