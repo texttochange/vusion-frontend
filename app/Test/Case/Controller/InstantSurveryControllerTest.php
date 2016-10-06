@@ -28,44 +28,69 @@ class InstantSurveryControllerTestCase extends ControllerTestCase
     
     public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
     
-    
     var $jsonCall = array(
-        'survey' => array(
-            'uid'=> 'survey_uid0001',
-            'participants_url' => 'http://askpeople.com/surveys/participants/survey_uid0001/list.csv',
-            'questions' => array(
-                0 => array(
-                    'uid' => 'question_uid001',
-                    'question_text' => 'example question 1?',
-                    'answers' => array(
-                        0 => array(
-                            'uid' => 'answer_uid_001',
-                            'answer_text' => 'yes',
-                            ),
-                        1 => array(
-                            'uid' => 'answer_uid_002',
-                            'answer_text' => 'no',
-                            )
-                        )                        
-                    ),
-                1 => array(
-                    'uid' => 'question_uid002',
-                    'question_text' => 'example question 2?',
-                    'answers' => array(
-                        0 => array(
-                            'uid' => 'answer_uid_003',
-                            'answer_text' => 'yes',
-                            ),
-                        1 => array(
-                            'uid' => 'answer_uid_004',
-                            'answer_text' => 'no',
-                            )
-                        )                        
+        "id" => 2709,
+        "participants_url" => "/api/surveys/2709/reporters/csv",
+        "questions" => array(
+            0 => array(
+                "id"=> 7209,
+                "question_type"=> "select",
+                "question_text" =>"Authentic beard yuccie vinegar.?",
+                "answers"=> array(
+                    0 => array(
+                        "id"=> 21442,
+                        "answer_text"=> "austin"
+                        ),
+                    1 => array(
+                        "id"=> 21443,
+                        "answer_text"=> "chia"
+                        ),
+                    2 => array(
+                        "id"=> 21444,
+                        "answer_text"=> "lumbersexual"
+                        )
+                    )
+                ),            
+            1 => array(
+                "id"=> 7210,
+                "question_type"=> "select",
+                "question_text"=> "Try-hard mixtape organic tousled yuccie iphone disrupt quinoa bitters.?",
+                "answers"=> array(
+                    0 => array(
+                        "id"=> 21445,
+                        "answer_text"=> "mumblecore"
+                        ),
+                    1 => array(
+                        "id"=> 21446,
+                        "answer_text"=> "microdosing"
+                        ),
+                    2 => array(
+                        "id"=> 21447,
+                        "answer_text"=> "pour-over"
+                        )
+                    )
+                ),
+            2 => array(
+                "id"=> 7211,
+                "question_type"=> "select",
+                "question_text"=> "Freegan organic disrupt asymmetrical intelligentsia beard.?",
+                "answers"=> array(
+                    0 => array(
+                        "id"=> 21448,
+                        "answer_text"=> "cronut"
+                        ),
+                    1 => array(
+                        "id"=> 21449,
+                        "answer_text"=> "hashtag"
+                        ),
+                    2 => array(
+                        "id"=> 21450,
+                        "answer_text"=> "hoodie"
+                        )
                     )
                 )
             )
         );
-    
     
     public function setUp()
     {
@@ -73,7 +98,7 @@ class InstantSurveryControllerTestCase extends ControllerTestCase
         $this->InstantSurvery = new TestInstantSurveryController();
         $this->Program = ClassRegistry::init('Program');
         $this->ShortCode = ClassRegistry::init('ShortCode');
-        $this->ProgramSettingTest = ProgramSpecificMongoModel::init('ProgramSetting', 'surveyuid0001', true);
+        $this->ProgramSettingTest = ProgramSpecificMongoModel::init('ProgramSetting', 'survey27093', true);
                 
         $this->maker = new ScriptMaker();
     }
@@ -132,7 +157,7 @@ class InstantSurveryControllerTestCase extends ControllerTestCase
     }
     
     
-   /* public function testAddSurvery() 
+    public function testAddSurvery_with_questions() 
     {
         $InstantSurvery = $this->generate(
             'InstantSurvery', array(
@@ -158,67 +183,15 @@ class InstantSurveryControllerTestCase extends ControllerTestCase
         ->method('_startBackendWorker')
         ->will($this->returnValue(true));
         
+        $programDialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', 'survery2709', true);
+        $programDialogue->deleteAll(true, false);
         
         $data = $this->jsonCall;
         
         $this->testAction('/InstantSurvery/addSurvery.json', array('data' => $data, 'method' => 'post'));
-    }*/
-    
-    
-    public function testAddSurvery_questions() 
-    {
-        $this->_saveShortcodesInMongoDatabase();
-        
-        $this->ProgramSettingTest = new ProgramSetting(array('database' => 'surveyuid0001'));
-        $this->ProgramSettingTest->saveProgramSetting('timezone','EAT');
-        $this->ProgramSettingTest->saveProgramSetting('international-prefix','256');
-        
-        
-        $InstantSurvery = $this->generate(
-            'InstantSurvery', array(
-                'methods' => array(
-                    '_instanciateVumiRabbitMQ',
-                    '_startBackendWorker',
-                    ),
-                'components' => array(
-                    'Auth' => array('user'),
-                    )
-                )
-            );
-        
-        $InstantSurvery->Auth
-        ->staticExpects($this->any())
-        ->method('user')
-        ->will($this->returnValue(array(
-            'id' => '8',
-            'group_id' => '1')));
-        
-        $InstantSurvery
-        ->expects($this->once())
-        ->method('_startBackendWorker')
-        ->will($this->returnValue(true));
-        
-        
-        $data = $this->jsonCall;
-        
-        $this->testAction('/InstantSurvery/addSurvery.json', array('data' => $data, 'method' => 'post'));
-        
-        //$this->assertEqual(1, $programDialogue->find('count'));
-        
-    }
-    
-    
-    protected function _saveShortcodesInMongoDatabase()
-    {
-        $shortcode1 = array(
-            'country' => 'uganda',
-            'shortcode' => '8282',
-            'international-prefix' => '256'
-            );        
-        $this->ShortCode->create();
-        $this->ShortCode->save($shortcode1);
-    }
-    
+        $this->assertEqual(1, $programDialogue->find('count'));
+    }   
     
     
 }

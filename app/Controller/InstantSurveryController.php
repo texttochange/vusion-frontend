@@ -17,7 +17,8 @@ class InstantSurveryController extends AppController
         'Program', 
         'Group',
         'ShortCode',
-        'ProgramSetting');
+        'ProgramSetting',
+        'Dialogue');
     
     var $components = array(
         'RequestHandler' => array(
@@ -44,12 +45,9 @@ class InstantSurveryController extends AppController
         if ($this->request->is('post')) {
             $savedProgram = null;
             $jsonData = $this->request->data;
-            
-            // print_r($this->request->data);
-            
-            $data['Program']['name'] = $jsonData['survey']['uid'];
-            $data['Program']['url'] = str_replace('_', '', $jsonData['survey']['uid']);
-            $data['Program']['database'] = str_replace('_', '', $jsonData['survey']['uid']);
+            $data['Program']['name'] = 'Survery_'.''.$jsonData['id'];
+            $data['Program']['url'] = 'survery'.''. $jsonData['id'];
+            $data['Program']['database'] = 'survery'.''.$jsonData['id'];
             
             $this->Program->create();
             if ($savedProgram = $this->Program->save($data)) {
@@ -67,9 +65,43 @@ class InstantSurveryController extends AppController
                 //Set program setting hardcoded
                 $this->_setProgramSettings();
                 
-                //Set closed questions 
+                //Set closed questions dialogue 
+                $dialogue['Dialogue'] = array(
+                    'name' => $jsonData['id'],
+                    'auto-enrollment' => 'all',
+                    'interactions' => array(),
+                    'activated' => 1
+                    );
                 
+                foreach($jsonData['questions'] as $question){
+                    $answers =  '';
+                    foreach($question['answers'] as $answer) { 
+                        $answers[]= array(
+                            'choice' => $this->_cleanString($answer['answer_text']), 
+                            'answer-actions' => array(
+                                0 => array(
+                                    'type-action' => 'tagging', 
+                                    'tag' => $answer['id']
+                                    ) 
+                                )
+                            );
+                    }
+                    $dialogue['Dialogue']['interactions'][] = array(
+                        'type-schedule' => 'offset-time',
+                        'minutes' => '5',
+                        'type-interaction' => 'question-answer',
+                        'content' => $question['question_text'],
+                        'keyword' => strval($question['id']),
+                        'type-question' => 'closed-question',                            
+                        'label-for-participant-profiling' => 'Answer'.''.$question['id'],
+                        'set-answer-accept-no-space'=> 'answer-accept-no-space',
+                        'answers' => $answers,
+                        'type-unmatching-feedback' => 'no-unmatching-feedback',
+                        );
+                    
+                }
                 
+                $this->Dialogue->saveDialogue($dialogue['Dialogue']);
                 
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
@@ -80,6 +112,18 @@ class InstantSurveryController extends AppController
     
     
     protected function _setProgramSettings()
+    {
+        $settings = array (
+            'shortcode' => '256-8282',
+            'international-prefix' => '256',
+            'timezone' => 'Africa/Kampala'
+            );        
+        
+        return $this->ProgramSetting->saveProgramSettings($settings);
+    }
+    
+    
+    protected function _setDialogueForSurvery()
     {
         $settings = array (
             'shortcode' => '256-8282',
@@ -107,5 +151,11 @@ class InstantSurveryController extends AppController
     {
         $this->VumiRabbitMQ->sendMessageToRemoveWorker($workerName, $databaseName);         
     }
+    
+    protected function _cleanString($string) {
+        $string = str_replace(' ', '-', $string);
+        return preg_replace('/[^A-Za-z0-9]/', '', $string);
+    }
+    
     
 }
