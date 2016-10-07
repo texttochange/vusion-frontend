@@ -25,10 +25,17 @@ class InstantSurveryController extends AppController
             'viewClassMap' => array(
                 'json' => 'View')),
         'UserAccess',
-        'NewProgram');
+        'NewProgram',
+        'Keyword');
     
     var $helpers = array('Time',
         'Js' => array('Jquery')); 
+    
+    var $settings = array (
+        'shortcode' => '256-8181',
+        'international-prefix' => '256',
+        'timezone' => 'Africa/Kampala',
+        'contact' => '8');
     
     
     function constructClasses()
@@ -39,18 +46,13 @@ class InstantSurveryController extends AppController
     
     
     public function addSurvery()
-    {
-        //$data  = $this->NewProgram->ajaxDatapatch($this->data);        
-        
+    {        
         if ($this->request->is('post')) {
             $savedProgram = null;
-            $data = $this->request;
-            print_r(var_dump($data));
-            //print_r(json_decode($this->request->data, true));
-            $jsonData = $this->request->data;
+            $jsonData = $this->request->input('json_decode', true);
             $data['Program']['name'] = 'Survery_'.''.$jsonData['id'];
             $data['Program']['url'] = 'survery'.''. $jsonData['id'];
-            $data['Program']['database'] = 'survery'.''.$jsonData['id'];
+            $data['Program']['database'] = 'survery'.''.$jsonData['id'];            
             
             $this->Program->create();
             if ($savedProgram = $this->Program->save($data)) {
@@ -60,13 +62,15 @@ class InstantSurveryController extends AppController
                     'programName' => $savedProgram['Program']['name']);
                 $this->UserLogMonitor->setEventData($eventData);
                 
+                 //Set program setting hardcoded
+                 $saveToProgramSettingModel = ProgramSpecificMongoModel::init(
+                            'ProgramSetting', $savedProgram['Program']['database'], true);                 
+                 $saveToProgramSettingModel->saveProgramSettings($this->settings);
+                
                 //Start the backend
                 $this->_startBackendWorker(
                     $savedProgram['Program']['url'],
-                    $savedProgram['Program']['database']);
-                
-                //Set program setting hardcoded
-                $this->_setProgramSettings();
+                    $savedProgram['Program']['database']); 
                 
                 //Set closed questions dialogue 
                 $dialogue['Dialogue'] = array(
@@ -77,34 +81,48 @@ class InstantSurveryController extends AppController
                     );
                 
                 foreach($jsonData['questions'] as $question){
-                    $answers =  '';
-                    foreach($question['answers'] as $answer) { 
-                        $answers[]= array(
-                            'choice' => $this->_cleanString($answer['answer_text']), 
-                            'answer-actions' => array(
-                                0 => array(
-                                    'type-action' => 'tagging', 
-                                    'tag' => $answer['id']
-                                    ) 
-                                )
+                    if ($question['question_type'] == 'select') {
+                        $answers =  '';
+                        foreach($question['answers'] as $answer) { 
+                            $answers[]= array(
+                                'choice' => $this->_cleanString($answer['answer_text']), 
+                                'answer-actions' => array(
+                                    0 => array(
+                                        'type-action' => 'tagging', 
+                                        'tag' => $answer['id']
+                                        ) 
+                                    )
+                                );
+                        }
+                        $dialogue['Dialogue']['interactions'][] = array(
+                            'type-schedule' => 'offset-time',
+                            'minutes' => '5',
+                            'type-interaction' => 'question-answer',
+                            'content' => $question['question_text'],
+                            'keyword' => strval($question['id']),
+                            'type-question' => 'closed-question',                            
+                            'label-for-participant-profiling' => 'Answer'.''.$question['id'],
+                            'set-answer-accept-no-space'=> 'answer-accept-no-space',
+                            'answers' => $answers,
+                            'type-unmatching-feedback' => 'no-unmatching-feedback',
+                            );
+                    } else {
+                        $dialogue['Dialogue']['interactions'][] = array(
+                            'type-schedule' => 'offset-time',
+                            'minutes' => '5',
+                            'type-interaction' => 'question-answer',
+                            'content' => $question['question_text'],
+                            'keyword' => strval($question['id']),
+                            'type-question' => 'open-question',                            
+                            'answer-label' => 'Answer'.''.$question['id'],
+                            'type-unmatching-feedback' => 'no-unmatching-feedback',
                             );
                     }
-                    $dialogue['Dialogue']['interactions'][] = array(
-                        'type-schedule' => 'offset-time',
-                        'minutes' => '5',
-                        'type-interaction' => 'question-answer',
-                        'content' => $question['question_text'],
-                        'keyword' => strval($question['id']),
-                        'type-question' => 'closed-question',                            
-                        'label-for-participant-profiling' => 'Answer'.''.$question['id'],
-                        'set-answer-accept-no-space'=> 'answer-accept-no-space',
-                        'answers' => $answers,
-                        'type-unmatching-feedback' => 'no-unmatching-feedback',
-                        );
-                    
                 }
                 
-                $this->Dialogue->saveDialogue($dialogue['Dialogue']);
+                $saveToDialogueModel = ProgramSpecificMongoModel::init(
+                            'Dialogue', $savedProgram['Program']['database'], true);                 
+                 $saveToDialogueModel->saveDialogue($dialogue['Dialogue']);
                 
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
@@ -112,31 +130,7 @@ class InstantSurveryController extends AppController
         }
         $this->set(compact('requestSuccess','savedProgram'));
     }
-    
-    
-    protected function _setProgramSettings()
-    {
-        $settings = array (
-            'shortcode' => '256-8282',
-            'international-prefix' => '256',
-            'timezone' => 'Africa/Kampala'
-            );        
-        
-        return $this->ProgramSetting->saveProgramSettings($settings);
-    }
-    
-    
-    protected function _setDialogueForSurvery()
-    {
-        $settings = array (
-            'shortcode' => '256-8282',
-            'international-prefix' => '256',
-            'timezone' => 'Africa/Kampala'
-            );        
-        
-        return $this->ProgramSetting->saveProgramSettings($settings);
-    }   
-    
+   
     
     protected function _instanciateVumiRabbitMQ()
     {

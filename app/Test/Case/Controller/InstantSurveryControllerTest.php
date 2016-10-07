@@ -29,7 +29,7 @@ class InstantSurveryControllerTestCase extends ControllerTestCase
     public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
     
     
-        var $jsonCall =  '{
+        var $jsonCall = '{
             "id": 2709,
             "participants_url": "/api/surveys/2709/reporters/csv",
             "questions": [
@@ -92,6 +92,19 @@ class InstantSurveryControllerTestCase extends ControllerTestCase
             }
             ]
         }';
+        
+        var $jsonCall2 = '{
+        "id":309,
+        "participants_url":"/api/surveys/3/reporters/csv",
+        "questions":[
+        {
+        "id":7,
+        "question_type":"free",
+        "question_text":"Meh green juice pabst celiac tumblr.?",
+        "answers":[
+        {
+        "id":19,
+        "answer_text":"This answer is for free text and only references the survey"}]}]}';
     
     public function setUp()
     {
@@ -186,14 +199,60 @@ class InstantSurveryControllerTestCase extends ControllerTestCase
         
         $programDialogue = ProgramSpecificMongoModel::init(
             'Dialogue', 'survery2709', true);
-        $programDialogue->deleteAll(true, false);        
+        $programDialogue->deleteAll(true, false);
+
+        $programSettings = ProgramSpecificMongoModel::init(
+            'ProgramSetting', 'survery2709', true);
+        $programSettings->deleteAll(true, false);   
                 
-        $data = json_decode($this->jsonCall, true);
-        //$data = $this->jsonCall;
+       // $data = json_decode($this->jsonCall, true);
+        $data = $this->jsonCall;
         
         $this->testAction('/InstantSurvery/addSurvery.json', array('data' => $data, 'method' => 'post'));
         $this->assertEqual(1, $programDialogue->find('count'));
-    }   
+    }
+    
+    
+    public function testAddSurvery_with_free_questions() 
+    {
+        $InstantSurvery = $this->generate(
+            'InstantSurvery', array(
+                'methods' => array(
+                    '_instanciateVumiRabbitMQ',
+                    '_startBackendWorker',
+                    ),
+                'components' => array(
+                    'Auth' => array('user'),
+                    )
+                )
+            );
+        
+        $InstantSurvery->Auth
+        ->staticExpects($this->any())
+        ->method('user')
+        ->will($this->returnValue(array(
+            'id' => '8',
+            'group_id' => '1')));
+        
+        $InstantSurvery
+        ->expects($this->once())
+        ->method('_startBackendWorker')
+        ->will($this->returnValue(true));
+        
+        $programDialogue = ProgramSpecificMongoModel::init(
+            'Dialogue', 'survery309', true);
+        $programDialogue->deleteAll(true, false);
+
+        $programSettings = ProgramSpecificMongoModel::init(
+            'ProgramSetting', 'survery309', true);
+        $programSettings->deleteAll(true, false);   
+                
+       // $data = json_decode($this->jsonCall, true);
+        $data = $this->jsonCall2;
+        
+        $this->testAction('/InstantSurvery/addSurvery.json', array('data' => $data, 'method' => 'post'));
+        $this->assertEqual(1, $programDialogue->find('count'));
+    }
     
     
 }
