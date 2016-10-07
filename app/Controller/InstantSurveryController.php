@@ -44,6 +44,9 @@ class InstantSurveryController extends AppController
         
         if ($this->request->is('post')) {
             $savedProgram = null;
+            $data = $this->request;
+            print_r(var_dump($data));
+            //print_r(json_decode($this->request->data, true));
             $jsonData = $this->request->data;
             $data['Program']['name'] = 'Survery_'.''.$jsonData['id'];
             $data['Program']['url'] = 'survery'.''. $jsonData['id'];

@@ -28,69 +28,70 @@ class InstantSurveryControllerTestCase extends ControllerTestCase
     
     public $fixtures = array('app.program','app.group','app.user', 'app.programsUser');
     
-    var $jsonCall = array(
-        "id" => 2709,
-        "participants_url" => "/api/surveys/2709/reporters/csv",
-        "questions" => array(
-            0 => array(
-                "id"=> 7209,
-                "question_type"=> "select",
-                "question_text" =>"Authentic beard yuccie vinegar.?",
-                "answers"=> array(
-                    0 => array(
-                        "id"=> 21442,
-                        "answer_text"=> "austin"
-                        ),
-                    1 => array(
-                        "id"=> 21443,
-                        "answer_text"=> "chia"
-                        ),
-                    2 => array(
-                        "id"=> 21444,
-                        "answer_text"=> "lumbersexual"
-                        )
-                    )
-                ),            
-            1 => array(
-                "id"=> 7210,
-                "question_type"=> "select",
-                "question_text"=> "Try-hard mixtape organic tousled yuccie iphone disrupt quinoa bitters.?",
-                "answers"=> array(
-                    0 => array(
-                        "id"=> 21445,
-                        "answer_text"=> "mumblecore"
-                        ),
-                    1 => array(
-                        "id"=> 21446,
-                        "answer_text"=> "microdosing"
-                        ),
-                    2 => array(
-                        "id"=> 21447,
-                        "answer_text"=> "pour-over"
-                        )
-                    )
-                ),
-            2 => array(
-                "id"=> 7211,
-                "question_type"=> "select",
-                "question_text"=> "Freegan organic disrupt asymmetrical intelligentsia beard.?",
-                "answers"=> array(
-                    0 => array(
-                        "id"=> 21448,
-                        "answer_text"=> "cronut"
-                        ),
-                    1 => array(
-                        "id"=> 21449,
-                        "answer_text"=> "hashtag"
-                        ),
-                    2 => array(
-                        "id"=> 21450,
-                        "answer_text"=> "hoodie"
-                        )
-                    )
-                )
-            )
-        );
+    
+        var $jsonCall =  '{
+            "id": 2709,
+            "participants_url": "/api/surveys/2709/reporters/csv",
+            "questions": [
+            {
+                "id": 7209,
+                "question_type": "select",
+                "question_text": "Authentic beard yuccie vinegar.?",
+                "answers": [
+                {
+                    "id": 21442,
+                    "answer_text": "austin"
+                },
+                {
+                    "id": 21443,
+                    "answer_text": "chia"
+                },
+                {
+                    "id": 21444,
+                    "answer_text": "lumbersexual"
+                }
+                ]
+            },
+            {
+                "id": 7210,
+                "question_type": "select",
+                "question_text": "Try-hard mixtape organic tousled yuccie iphone disrupt quinoa bitters.?",
+                "answers": [
+                {
+                    "id": 21445,
+                    "answer_text": "mumblecore"
+                },
+                {
+                    "id": 21446,
+                    "answer_text": "microdosing"
+                },
+                {
+                    "id": 21447,
+                    "answer_text": "pour-over"
+                }
+                ]
+            },
+            {
+                "id": 7211,
+                "question_type": "select",
+                "question_text": "Freegan organic disrupt asymmetrical intelligentsia beard.?",
+                "answers": [
+                {
+                    "id": 21448,
+                    "answer_text": "cronut"
+                },
+                {
+                    "id": 21449,
+                    "answer_text": "hashtag"
+                },
+                {
+                    "id": 21450,
+                    "answer_text": "hoodie"
+                }
+                ]
+            }
+            ]
+        }';
     
     public function setUp()
     {
@@ -98,7 +99,7 @@ class InstantSurveryControllerTestCase extends ControllerTestCase
         $this->InstantSurvery = new TestInstantSurveryController();
         $this->Program = ClassRegistry::init('Program');
         $this->ShortCode = ClassRegistry::init('ShortCode');
-        $this->ProgramSettingTest = ProgramSpecificMongoModel::init('ProgramSetting', 'survey27093', true);
+        $this->ProgramSettingTest = ProgramSpecificMongoModel::init('ProgramSetting', 'survey2709', true);
                 
         $this->maker = new ScriptMaker();
     }
@@ -185,9 +186,10 @@ class InstantSurveryControllerTestCase extends ControllerTestCase
         
         $programDialogue = ProgramSpecificMongoModel::init(
             'Dialogue', 'survery2709', true);
-        $programDialogue->deleteAll(true, false);
-        
-        $data = $this->jsonCall;
+        $programDialogue->deleteAll(true, false);        
+                
+        $data = json_decode($this->jsonCall, true);
+        //$data = $this->jsonCall;
         
         $this->testAction('/InstantSurvery/addSurvery.json', array('data' => $data, 'method' => 'post'));
         $this->assertEqual(1, $programDialogue->find('count'));
