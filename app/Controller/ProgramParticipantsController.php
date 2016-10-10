@@ -120,6 +120,69 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     }
     
     
+    public function listSurveyParticipants()
+    {
+        $requestSuccess = true;
+        $conditions     = array();
+        
+        if (!$this->_isCsv() && !$this->_isAjax()) {
+            throw new MethodNotAllowedException();
+        }
+        
+        $conditions = $this->Filter->getConditions(
+            $this->Participant,
+            array(),
+            array('Schedule' => $this->Schedule));
+        
+        $participants = $this->Participant->find(
+            'allSafeJoin',
+            array(
+                'conditions' => $conditions,
+                'limit'=> 10000));
+        
+        $participantSurveyProfile = array();
+        $index = 0;
+        foreach($participants as $participant) {
+            $participantTags[$index] = null;
+            $participantTags =array_splice($participant['Participant']['tags'],  1);            
+            $participantProfiles = $participant['Participant']['profile'];                        
+            $reportId = $this->_searchProfileId($participantProfiles, 'reportid');
+            foreach($participantProfiles as $participantProfile) {
+                $participantSurveyProfile[$index]['answer_text'] = null;
+                $participantSurveyProfileList[$index] = null;
+                if (isset($participantTags[$index])) {
+                    $participantSurveyProfile[$index]['answer_id'] = $participantTags[$index];
+                }
+                if (substr($participantProfile['label'], 0, 6) == 'Answer') {
+                    $participantSurveyProfile[$index]['answer_text'] = $participantProfile['value'];
+                } else {
+                    $participantSurveyProfile[$index] = array();
+                }                
+                if (isset($reportId)) {
+                    $participantSurveyProfileList[$index]  = array_merge_recursive($participantSurveyProfile[$index], $reportId); 
+                }
+                $index++;
+            }
+        }
+        $this->set(compact('participantSurveyProfileList', 'requestSuccess', 'explodeProfile'));
+        $this->render('index');
+    }    
+        
+    
+    protected function _searchProfileId($array, $labelKey)
+    {
+        $results = array();        
+        foreach($array as $label) {
+            if ($label['label'] == 'reportid') {
+                $results['report_id'] = $label['value']; 
+                if (isset($results)) {
+                    return $results;
+                }
+            }
+        } 
+    }
+    
+    
     protected function _getFilterFieldOptions()
     {   
         $filters = $this->Participant->getFilters();
