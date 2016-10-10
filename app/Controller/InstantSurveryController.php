@@ -62,10 +62,10 @@ class InstantSurveryController extends AppController
                     'programName' => $savedProgram['Program']['name']);
                 $this->UserLogMonitor->setEventData($eventData);
                 
-                 //Set program setting hardcoded
-                 $saveToProgramSettingModel = ProgramSpecificMongoModel::init(
-                            'ProgramSetting', $savedProgram['Program']['database'], true);                 
-                 $saveToProgramSettingModel->saveProgramSettings($this->settings);
+                //Set program setting hardcoded
+                $saveToProgramSettingModel = ProgramSpecificMongoModel::init(
+                    'ProgramSetting', $savedProgram['Program']['database'], true);                 
+                $saveToProgramSettingModel->saveProgramSettings($this->settings);
                 
                 //Start the backend
                 $this->_startBackendWorker(
@@ -115,14 +115,19 @@ class InstantSurveryController extends AppController
                             'keyword' => strval($question['id']),
                             'type-question' => 'open-question',                            
                             'answer-label' => 'Answer'.''.$question['id'],
+                            'set-matching-answer-actions' => 'matching-answer-actions',
+                            'matching-answer-actions' => array( 
+                                0 => array(
+                                    'type-action' => 'tagging', 
+                                    'tag' => $question['answers'][0]['id'] )),
                             'type-unmatching-feedback' => 'no-unmatching-feedback',
                             );
                     }
                 }
                 
                 $saveToDialogueModel = ProgramSpecificMongoModel::init(
-                            'Dialogue', $savedProgram['Program']['database'], true);                 
-                 $saveToDialogueModel->saveDialogue($dialogue['Dialogue']);
+                    'Dialogue', $savedProgram['Program']['database'], true);                 
+                $saveToDialogueModel->saveDialogue($dialogue['Dialogue']);
                 
             } else {
                 $this->Session->setFlash(__('The program could not be saved. Please, try again.'));
