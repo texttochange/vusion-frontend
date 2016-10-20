@@ -143,26 +143,32 @@ class ProgramParticipantsController extends BaseProgramSpecificController
         $participantSurveyProfile = array();
         $index = 0;
         foreach($participants as $participant) {
-            $participantTags[$index] = null;
-            $participantTags =array_splice($participant['Participant']['tags'],  1);            
+            $indexT = 0;
+            $participantTags[$indexT] = null;
+            //$participantTags =array_splice($participant['Participant']['tags'],  1);
+            $participantTags = $participant['Participant']['tags'];
+                        
             $participantProfiles = $participant['Participant']['profile'];                        
-            $reportId = $this->_searchProfileId($participantProfiles, 'reportid');
+            $reportId = $this->_searchProfileId($participantProfiles, 'reporterid');
             foreach($participantProfiles as $participantProfile) {
                 $participantSurveyProfile[$index]['answer_text'] = null;
-                $participantSurveyProfileList[$index] = null;
-                if (isset($participantTags[$index])) {
-                    $participantSurveyProfile[$index]['answer_id'] = $participantTags[$index];
+                $participantSurveyProfileList[$index] = null;                
+                
+                if (isset($participantTags[$indexT])) {
+                    $participantSurveyProfile[$index]['answer_id'] = $participantTags[$indexT];
                 }
                 if (substr($participantProfile['label'], 0, 6) == 'Answer') {
                     $participantSurveyProfile[$index]['answer_text'] = $participantProfile['value'];
                 } else {
                     $participantSurveyProfile[$index] = array();
                 }                
-                if (isset($reportId)) {
+                if (isset($reportId) && $participantProfile['label'] != 'reporterid') {
                     $participantSurveyProfileList[$index]  = array_merge_recursive($participantSurveyProfile[$index], $reportId); 
                 }
                 $index++;
+                $indexT++;
             }
+            
         }
         $this->set(compact('participantSurveyProfileList', 'requestSuccess', 'explodeProfile'));
         $this->render('index');
@@ -173,7 +179,7 @@ class ProgramParticipantsController extends BaseProgramSpecificController
     {
         $results = array();        
         foreach($array as $label) {
-            if ($label['label'] == 'reportid') {
+            if ($label['label'] == $labelKey) {
                 $results['report_id'] = $label['value']; 
                 if (isset($results)) {
                     return $results;

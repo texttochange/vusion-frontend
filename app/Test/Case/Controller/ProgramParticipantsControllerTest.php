@@ -140,7 +140,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         return $participants;
     }
     
-    
+    /*
     public function testAdd()
     {
         $participants = $this->mockProgramAccess();
@@ -1371,7 +1371,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/listParticipants.json?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:female");
         $this->assertEquals(1, count($this->vars['participants']));
-    }
+    }*/
     
     
     public function testListSurveyParticipants()
@@ -1419,7 +1419,7 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                 3 => array(
                     'raw' => null,
                     'value' => '79988',
-                    'label' => 'reportid'
+                    'label' => 'reporterid'
                     ),
                 4 => array(
                     'raw' => '6tousled',
@@ -1427,14 +1427,41 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     'label' => 'Answer6'
                     ))
             ));
-        
+        $this->Participant->create();
+        $savedParticipant = $this->Participant->save(array(
+            'phone' => '+20',
+            'session-id' => '8',
+            'last-optin-date' => '2012-12-02T18:30:10',
+            'enrolled' => array(),
+            'tags' => array('imported', '134', '123', '164', '839'),
+            'profile' => array(
+                0 => array(
+                    'label'=> 'gender',
+                    'value' => 'female',
+                    'raw' => null),
+                1 => array(
+                    'raw' => '5tousled',
+                    'value' => 'tousled',
+                    'label' => 'Answer5'
+                    ),
+                2 => array(
+                    'raw' => null,
+                    'value' => '56767',
+                    'label' => 'reporterid'
+                    ),
+                3 => array(
+                    'raw' => '6tousled',
+                    'value' => 'tousledty',
+                    'label' => 'Answer6'
+                    ))
+            ));
         $this->mockProgramAccess();
         $this->testAction("/testurl/programParticipants/listSurveyParticipants.json?filter_operator=all&filter_param%5B1%5D%5B1%5D=labelled&filter_param%5B1%5D%5B2%5D=with&filter_param%5B1%5D%5B3%5D=gender:female");
         
-        $this->assertEquals(5, count($this->vars['participantSurveyProfileList']));
+        $this->assertEquals(9, count($this->vars['participantSurveyProfileList']));
     }
     
-    
+    /*
     public function testGetFilterParameterIndex()
     {
         $exprectedTags = array('Geek', 'Hipster');
@@ -1794,6 +1821,6 @@ class ProgramParticipantsControllerTestCase extends ControllerTestCase
                     )
                 )
             );
-    }
+    }*/
     
 }
