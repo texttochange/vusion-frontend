@@ -119,6 +119,9 @@ class InstantSurveryController extends AppController
                             'matching-answer-actions' => array( 
                                 0 => array(
                                     'type-action' => 'tagging', 
+                                    'tag' => 'free' ),
+                                1 => array(
+                                    'type-action' => 'tagging', 
                                     'tag' => $question['answers'][0]['id'] )),
                             'type-unmatching-feedback' => 'no-unmatching-feedback',
                             );
