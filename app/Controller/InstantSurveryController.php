@@ -90,7 +90,11 @@ class InstantSurveryController extends AppController
                                     0 => array(
                                         'type-action' => 'tagging', 
                                         'tag' => $answer['id']
-                                        ) 
+                                        ),
+                                    1 => array(
+                                        'type-action' => 'url-forwarding', 
+                                        'forward-url' => 'http://ask-people.vizzuality.com/api/answers'
+                                        )                                    
                                     )
                                 );
                         }
@@ -122,7 +126,10 @@ class InstantSurveryController extends AppController
                                     'tag' => 'free' ),
                                 1 => array(
                                     'type-action' => 'tagging', 
-                                    'tag' => $question['answers'][0]['id'] )),
+                                    'tag' => $question['answers'][0]['id'] ),
+                                2 => array(
+                                    'type-action' => 'url-forwarding', 
+                                    'forward-url' => 'http://ask-people.vizzuality.com/api/answers')),
                             'type-unmatching-feedback' => 'no-unmatching-feedback',
                             );
                     }
