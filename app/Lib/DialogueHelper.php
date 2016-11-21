@@ -167,6 +167,8 @@ class DialogueHelper
         $string = preg_replace( '@\x{00e6}@u', "ae", $string);    // æ => ae
         $string = preg_replace( '@\x{0152}@u', "OE", $string);    // Œ => OE
         $string = preg_replace( '@\x{0153}@u', "oe", $string);    // œ => oe
+        $string = preg_replace( '/ማ/', "M", $string);    // ማ => M
+        $string = preg_replace( '/ም/', "PM", $string);    // ም => PM
 
         $a = 'ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåçèéêëìíîïðñòóôõöøùúûüýýþÿŔŕ '; 
         $b = 'aaaaaaceeeeiiiidnoooooouuuuybsaaaaaaceeeeiiiidnoooooouuuuyybyRr '; 
