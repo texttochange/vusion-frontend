@@ -830,6 +830,7 @@ class UsersController extends AppController
             $this->Acl->allow($Group, 'controllers/ProgramAjax');
             $this->Acl->allow($Group, 'controllers/InstantSurvery');
             $this->Acl->allow($Group, 'controllers/ProgramHome');
+            $this->Acl->allow($Group, 'controllers/ProgramContentVariables');
             $this->Acl->allow($Group, 'controllers/ProgramParticipants');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/index');
             $this->Acl->allow($Group, 'controllers/ProgramHistory/export');
