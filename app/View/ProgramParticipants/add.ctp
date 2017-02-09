@@ -13,8 +13,7 @@
         
         $contentActions[] = $this->Html->link(__('Save'),
             array(),
-            array('class'=>'ttc-button',
-                'id' => 'button-save'));
+            array('class'=>'ttc-button','id' => 'button-save'));
         $this->Js->get('#button-save')->event('click',
             '$("#ParticipantAddForm").submit()' , true);
         
