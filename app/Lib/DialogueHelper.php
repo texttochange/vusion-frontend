@@ -172,6 +172,7 @@ class DialogueHelper
         $string = preg_replace( '/ል/', "Lee", $string);   //ል => Lee
         $string = preg_replace( '/ዝ/', "The", $string);   //ዝ => The
         $string = preg_replace( '/ጻ/', "free", $string);  //ጻ => free
+        $string = preg_replace( '/ን/', "Read", $string);  //ጻ => Read
         
         $a = 'ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåçèéêëìíîïðñòóôõöøùúûüýýþÿŔŕ '; 
         $b = 'aaaaaaceeeeiiiidnoooooouuuuybsaaaaaaceeeeiiiidnoooooouuuuyybyRr '; 
