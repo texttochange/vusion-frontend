@@ -48,7 +48,7 @@ class VusionConst
     const ATTIME_REGEX = '/^([0-1]\d|2[0-4]):([0-5]\d|60)$/';
     const ATTIME_FAIL_MESSAGE = 'The at-time is not valid.';
 
-    const FORWARD_URL_REGEX = "/^http:\/\/[A-Za-z0-9.-]+(:[0-9]+)?((\/[\+~%\/.\w-_]*)?\??(([-\+;%@.\w_]*=[\['-\+;%@.\w_\s\]]*)(&[-\+;%@.\w_]*=[\['-\+;%@.\w_\s\]]*)*)?)?$/";
+    const FORWARD_URL_REGEX = "/^(http|https):\/\/[A-Za-z0-9.-]+(:[0-9]+)?((\/[\+~%\/.\w-_]*)?\??(([-\+;%@.\w_]*=[\['-\+;%@.\w_\s\]]*)(&[-\+;%@.\w_]*=[\['-\+;%@.\w_\s\]]*)*)?)?$/";
     const FORWARD_URL_FAIL_MESSAGE = 'The forward url is not valid.';
     const FORWARD_URL_REPLACEMENT_REGEX = '/\[[-\+&;%@.\w_]*\]/';
 
