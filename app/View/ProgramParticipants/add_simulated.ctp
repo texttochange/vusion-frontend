@@ -18,13 +18,13 @@
         $this->Js->get('#button-save')->event('click',
             '$("#ParticipantAddForm").submit()' , true);
         
-        $contentActions[] = $this->Html->link(__('Import Participant(s)'),
+        $contentActions[] = $this->Html->link(__('Import  Participant(s)'),
 		    array('program' => $programDetails['url'],
 		        'controller' => $controller,
 		        'action' => 'import'), 
 		    array('class'=>'ttc-button'));
 		
-		$contentActions[] = $this->Html->link(__('View Participant(s)'),
+		$contentActions[] = $this->Html->link(__('View  Participant(s)'),
 		    array('program' => $programDetails['url'],
 		        'controller' => $controller,
 		        'action' => 'index'),
