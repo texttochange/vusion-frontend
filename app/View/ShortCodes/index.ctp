@@ -53,7 +53,7 @@
 			    echo $this->Form->postLink(__('Enable'), array('action' => 'unarchive', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to enable the shortcode "%s"?', $shortcode['ShortCode']['shortcode']));
 			    
 			} else {
-			    echo $this->Form->postLink(__('Disable'), array('action' => 'archive', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to disable the shortcode "%s"?', $shortcode['ShortCode']['shortcode']));
+			    echo $this->Form->postLink(__('Disables'), array('action' => 'archive', $shortcode['ShortCode']['_id']), null, __('Are you sure you want to disable the shortcode "%s"?', $shortcode['ShortCode']['shortcode']));
 			}
 			?>
 			</td>
