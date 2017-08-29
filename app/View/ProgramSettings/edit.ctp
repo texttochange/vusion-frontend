@@ -3,7 +3,7 @@
 ?>
 <div class="programsettings form width-size">
    <?php
-        $contentTitle   = __('Edit Program Settings'); 
+        $contentTitle   = __('Edit Program Setting'); 
         $contentActions = array();
         $controller     = 'programParticipants';
         
