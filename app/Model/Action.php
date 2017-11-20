@@ -82,6 +82,7 @@ class Action extends VirtualModel
                         'url-forwarding',
                         'sms-forwarding',
                         'sms-invite',
+                        'sms-mo',
                         'save-content-variable-table')),
                 'message' => 'The type-action value is not valid.'
                 ),
@@ -100,6 +101,7 @@ class Action extends VirtualModel
                         'url-forwarding' => array('forward-url'),
                         'sms-forwarding' => array('forward-to', 'forward-content', 'set-forward-message-condition'),
                         'sms-invite' => array('invite-content', 'invitee-tag', 'feedback-inviter'),
+                        'sms-mo' => array('mo-content'),
                         'save-content-variable-table' => array(
                             'scvt-attached-table', 
                             'scvt-row-keys',
@@ -152,6 +154,20 @@ class Action extends VirtualModel
                 'message' => 'noMessage'
                 ),
             ),
+        'mo-content' => array(
+            'requiredConditional' => array (
+                'rule' => array('requiredConditionalFieldValue', 'type-action', 'sms-mo'),
+                'message' => 'The content field require an sms mo action.',
+                ),
+            'notForbiddenApostrophe' => array(
+                'rule' => array('notregex', VusionConst::APOSTROPHE_REGEX),
+                'message' => VusionConst::APOSTROPHE_FAIL_MESSAGE
+                ),
+            'validContentVariable' => array(
+                'rule' => array('validContentVariable', VusionConst::CUSTOMIZE_CONTENT_DOMAIN_RESPONSE),
+                'message' => 'noMessage'
+                ),
+            ),        
         'proportional-tags' => array(
             'requiredConditional' => array (
                 'rule' => array('requiredConditionalFieldValue', 'type-action', 'proportional-tagging'),
