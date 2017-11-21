@@ -109,6 +109,8 @@ class DynamicFormComponent extends Component
             "forward-to"=> __('Receiver Tag(s) and/or Label(s)'),
             "forward-content"=> __('Content'),
             "sms-invite"=> __('SMS Invite'),
+            "sms-mo" => __('SMS MO'),
+            "mo-content" => __('Content'),
             "invite-content"=> __('Content'),
             "invitee-tag"=> __('Invitee Tag'),
             "feedback-inviter"=> __('Feedback inviter'),
