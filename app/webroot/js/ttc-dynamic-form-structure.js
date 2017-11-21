@@ -373,6 +373,8 @@ var action = {
             'subfields': ['invite-content',
                           'invitee-tag',
                           'feedback-inviter']},
+            {'value': "sms-mo",
+            'subfields': ['mo-content']},
             {'value': 'save-content-variable-table',
             'subfields': ['scvt-attached-table', 
                           'scvt-col-key-header',
@@ -439,6 +441,7 @@ var action = {
     'feedback-inviter': {'type': 'textarea'},
     'keep-tags': {'type': 'text'},
     'keep-labels': {'type': 'text'},
+    'mo-content':{'type': 'textarea'},
 }
 $.extend(dynamicForm, action);
 

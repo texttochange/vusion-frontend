@@ -4,7 +4,7 @@ Vagrant::configure("2") do |config|
     config.vm.hostname = "vusion"
     config.vm.box = "vusionFine5"
     #config.vm.box_url = "file:d/project/ttc/vusion-frontend/vusion_cakephp_new.box"
-    config.vm.box_url = "file: project/ttc/vusion-frontend/vusion_2015_01_28.box"
+    #config.vm.box_url = "file: project/ttc/vusion-frontend/vusion_2015_01_28.box"
     config.vm.usable_port_range = 2200..2250
     
     config.vm.network "forwarded_port", guest:80, host:4567   
@@ -13,7 +13,7 @@ Vagrant::configure("2") do |config|
     #to run the tests in your host env
     config.vm.network "forwarded_port", guest:27017, host:27017
     config.vm.network "forwarded_port", guest:6379, host:6379
-    config.vm.network "forwarded_port", guest:3306, host:3309
+    config.vm.network "forwarded_port", guest:3306, host:3306
     
 
     #to allow pushing messages to the default transports
