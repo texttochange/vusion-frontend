@@ -23,7 +23,7 @@
 		        'action' => 'import'), 
 		    array('class'=>'ttc-button'));
 		
-		$contentActions[] = $this->Html->link(__('View Participant(s)'),
+		$contentActions[] = $this->Html->link(__('View Participant2(s)'),
 		    array('program' => $programDetails['url'],
 		        'controller' => $controller,
 		        'action' => 'index'),
