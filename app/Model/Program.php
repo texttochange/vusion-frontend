@@ -80,9 +80,24 @@ class Program extends AppModel
             'inList' => array(
                 'rule' => array('inList', array('running', 'archived')),
                 'message' => 'The status can only be running or archived.'),
-            )
+            ),
+        'programcode' => array(
+            'notempty' => array(
+                'rule' => 'notempty',
+                'message' => 'Please give a program code to the program.'
+                ),
+            'unique' => array(
+                'rule' => 'isunique',
+                'required' => true,
+                'message' => 'Another program is currently using this program code, please choose another one.'
+                ),
+            'notEditable' => array(
+                'rule' => array('isNotEditable'),
+                'message' => 'This field is read only.',
+                'on' => 'update'
+                )
+            ),
         );
-    
     
     
     public function __construct($id = false, $table = null, $ds = null)
